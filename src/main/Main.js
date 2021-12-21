@@ -1,7 +1,11 @@
-const Main = () => {
+import Page from "../shared/custom/Page";
+
+function Main() {
   return (
-    <div></div>
-  );
+    <Page>
+      
+    </Page>
+  )
 }
 
 export default Main;
