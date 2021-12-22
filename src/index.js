@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import '@fontsource/rubik';
+import '@fontsource/inter';
 import './index.css';
 import './localization';
 import Core from "./core/Core";

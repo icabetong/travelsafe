@@ -10,8 +10,8 @@ const theme = extendTheme(
   }),{
     config,
     fonts: {
-      heading: "Rubik",
-      body: "Rubik"
+      heading: "Inter",
+      body: "Inter"
     }
   }
 );
