@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/react";
+import { Center, Flex } from "@chakra-ui/react";
 import Header from "./Header";
 
 const Page = ({children}) => {
@@ -10,7 +10,9 @@ const Page = ({children}) => {
       align="center"
       m="0 auto">
       <Header/>
+      <Center h="80vh" w="100%">
       {children}
+      </Center>
     </Flex>
   )
 }

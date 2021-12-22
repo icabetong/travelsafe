@@ -9,8 +9,9 @@ const theme = extendTheme(
     colorScheme: "teal" 
   }),{
     config,
-    color: {
-      
+    fonts: {
+      heading: "Rubik",
+      body: "Rubik"
     }
   }
 );
