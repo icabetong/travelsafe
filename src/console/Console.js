@@ -1,9 +1,14 @@
 
+import { useTranslation } from "react-i18next";
 import Page from "../shared/custom/Page";
 
 function Console() {
+  const { t } = useTranslation();
+
   return (
-    <Page></Page>
+    <Page title={t("navigation.console")}>
+
+    </Page>
   );
 }
 

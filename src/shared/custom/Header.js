@@ -1,16 +1,20 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { 
     Box,
     Button,
     Flex,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
     Text,
 } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { useAuth } from "../../auth/Provider";
 
-const MenuItems = (props) => {
+const NavigationItem = (props) => {
   const { children, isLast, to = "/", ...rest } = props;
 
   return (
@@ -19,6 +23,8 @@ const MenuItems = (props) => {
       mr={{base: 0, sm: isLast ? 0 : 8}}
       display="block"
       fontWeight="medium"
+      bg={["teal.500", "teal.500", "transparent", "transparent"]}
+      color={["white", "white", "teal.500", "teal.500"]}
       {...rest}>
       <Link to={to}>{children}</Link>
     </Text>
@@ -39,8 +45,7 @@ const Header = (props) => {
       w="100%"
       mb={8}
       p={8}
-      bg={["teal.500", "teal.500", "transparent", "transparent"]}
-      color={["white", "white", "teal.500", "teal.500"]}
+      
       {...props} >
       <Flex align="center" color="white">
         <Link to="/">
@@ -67,8 +72,13 @@ const Header = (props) => {
 
 const Navigation = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
-  console.log(user);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const onSignOut = async () => {
+    await signOut();
+    navigate("/signin");
+  }
 
   return (
     <>
@@ -77,12 +87,26 @@ const Navigation = () => {
         justify={["center", "space-between", "flex-end", "flex-end"]}
         direction={["column", "row", "row", "row"]}
         pt={[4, 4, 0, 0]}>
-        <MenuItems to="/about">{t("navigation.about")}</MenuItems>
-        <MenuItems to={user ? "/dashboard" : "/signin"}>
-          <Button>
-            {t(user ? "navigation.account" : "button.sign-in")}
-          </Button>
-        </MenuItems>
+        <NavigationItem to="/about">{t("navigation.about")}</NavigationItem>
+        { user 
+          ?
+            <Menu>
+              <MenuButton
+                as={Button}
+                rightIcon={<ChevronDownIcon/>}>
+                {t("navigation.account")}
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={() => navigate("/dashboard")}>{t("navigation.dashboard")}</MenuItem>
+                <MenuItem onClick={onSignOut}>{t("button.signout")}</MenuItem>
+              </MenuList>
+            </Menu>
+          : <NavigationItem to="/signin">
+              <Button>
+                {t("button.sign-in")}
+              </Button>
+            </NavigationItem>
+        }
       </Flex>
     </>
   );
