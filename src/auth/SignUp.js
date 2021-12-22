@@ -5,25 +5,32 @@ import { useForm } from "react-hook-form";
 import {  
   Box,
   Button,
+  Center,
   Flex,
   FormControl,
   FormLabel,
   FormErrorMessage,
   Input,
-  Stack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
   useToast,
+  useDisclosure,
 } from "@chakra-ui/react";
 import Page from "../shared/custom/Page";
 import { useAuth } from "./Provider";
 
 function SignUp() {
   const { t } = useTranslation();
-  const { handleSubmit, register, formState: { errors }, getValues } = useForm();
   const { signUp } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
-  const [emailConfirm, setEmailConfirm] = useState();
+  const { open, onOpen, onClose } = useDisclosure();
 
   const onSubmit = async (data) => {
     setSubmitting(true);
@@ -32,7 +39,7 @@ function SignUp() {
     const { error } = await signUp({email, password});
     setSubmitting(false);
     if (!error) {
-      setEmailConfirm(email);
+      onOpen();
     } else {
       toast({
         title: t("feedback.sign-up-error"),
@@ -43,10 +50,42 @@ function SignUp() {
     }
   }
 
-  const form = (
+  return (
+    <Page>
+      <Center
+        w="100%">
+        <AuthForm onSubmit={onSubmit} submitting={submitting}/>
+      </Center>
+      <Modal isOpen={open} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{t("auth.sign-up-confirm")}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box>
+              {t("auth.sign-up-subtitle-confirm")}
+            </Box>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={() => navigate("/")}>
+              {t("button.back-to-home")}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </Page>
+  );
+}
+
+function AuthForm(props) {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { register, handleSubmit, formState: { errors }, getValues } = useForm();
+
+  return (
     <Flex
       as="form"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(props.onSubmit)}
       direction="column"
       w={{base: "80%", md: "40%"}}
       maxW={{base: "80%", md: "40%"}}
@@ -90,10 +129,10 @@ function SignUp() {
         <FormErrorMessage>{t(errors.password && errors.password.message)}</FormErrorMessage>
       </FormControl>
       <FormControl mb={8} isInvalid={errors.password && errors.password} isRequired>
-        <FormLabel htmlFor='password'>{t("field.password")}</FormLabel>
+        <FormLabel htmlFor='confirmpassword'>{t("field.confirm-password")}</FormLabel>
         <Input 
           id='confirmpassword' 
-          type='confirmpassword'
+          type='password'
           placeholder={t("placeholder.confirm-password")}
           {...register("password", { 
             required: "feedback.auth_empty_password", 
@@ -105,9 +144,9 @@ function SignUp() {
       </FormControl>
       <Button
         mb={4}
-        type="submit"
         maxW="60%"
-        isLoading={submitting}>
+        type="submit"
+        isLoading={props.submitting}>
         {t("button.sign-up")}
       </Button>
       <Button
@@ -117,30 +156,8 @@ function SignUp() {
       </Button>
     </Flex>
   )
-
-  const feedback = (
-    <Stack>
-      <Box
-        as="h4"
-        fontSize="2xl"
-        fontWeight="semibold">
-        {t("auth.sign-up-confirm")}
-      </Box>
-      <Box
-        mb={16}>
-        {t("auth.sign-up-subtitle-confirm")}
-      </Box>
-      <Button onClick={() => navigate("/")}>
-        {t("button.back-to-home")}
-      </Button>
-    </Stack>
-  )
-
-  return (
-    <Page>
-      {!emailConfirm ? form : feedback}
-    </Page>
-  );
 }
+
+
 
 export default SignUp;

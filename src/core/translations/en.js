@@ -19,8 +19,8 @@ const english = {
       "sign-in": "Sign-in",
       "sign-up": "Sign-up",
       "sign-out": "Sign-out",
-      "switch-light": "Switch Light",
-      "switch-dark": "Switch Dark",
+      "switch-light": "Switch to Light",
+      "switch-dark": "Switch to Dark",
       "create-an-account": "Create an Account",
       "use-an-existing-account": "Use an existing account"
     },
