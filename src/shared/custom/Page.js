@@ -12,13 +12,13 @@ const Page = ({title, children}) => {
       <Header/>
       <Box
         as="h4"
-        px={12}
-        fontSize={{base: 'lg', md: '2xl'}}
-        fontWeight="medium">
+        px={8}
+        fontSize={{base: 'md', md: '3xl'}}
+        fontWeight="semibold">
         {title}
       </Box>
       <Center h="80vh" w="100%">
-      {children}
+        {children}
       </Center>
     </Flex>
   )

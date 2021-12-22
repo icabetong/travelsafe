@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
+import About from "../about/About";
 import Console from "../console/Console";
 import Dashboard from "../dashboard/Dashboard";
 import Main from "../main/Main";
@@ -16,10 +17,11 @@ function Core() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Main/>} exact/>
+            <Route path="/about" element={<About/>}/>
             <Route path="/signin" element={<SignIn/>}/>
             <Route path="/signup" element={<SignUp/>}/>
             <Route path="/dashboard" element={<PrivateRoute to="/signin"><Dashboard/></PrivateRoute>}/>
-            <Route path="/console" element={<PrivateRoute to="/signin"><Dashboard/></PrivateRoute>}/>
+            <Route path="/console" element={<PrivateRoute to="/signin"><Console/></PrivateRoute>}/>
           </Routes>
         </BrowserRouter>
       </AuthProvider>

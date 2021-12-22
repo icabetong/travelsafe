@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
@@ -20,11 +21,14 @@ function SignIn() {
   const navigate = useNavigate();
   const { signIn } = useAuth();
   const toast = useToast();
+  const [submitting, setSubmitting] = useState(false);
 
   const onSubmit = async (data) => {
+    setSubmitting(true);
     const { email, password } = data;
 
     const { error } = await signIn({ email, password });
+    setSubmitting(false);
     if (!error) {
       navigate("/dashboard");
     } else {
@@ -82,7 +86,8 @@ function SignIn() {
         <Button
           mb={4}
           type="submit"
-          maxW="60%">
+          maxW="60%"
+          isLoading={submitting}>
           {t("button.sign-in")}
         </Button>
         <Button
