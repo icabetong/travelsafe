@@ -10,8 +10,16 @@ import {
     MenuList,
     MenuItem,
     Text,
+    useColorMode,
 } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { 
+  Shield, 
+  LogOut, 
+  ChevronDown, 
+  X,
+  Moon,
+  Sun,
+  Menu as MenuIcon } from "react-feather";
 import { useAuth } from "../../auth/Provider";
 
 const NavigationItem = (props) => {
@@ -47,7 +55,7 @@ const Header = (props) => {
       p={8}
       
       {...props} >
-      <Flex align="center" color="white">
+      <Flex align="center">
         <Link to="/">
           <Text 
             mx={4} 
@@ -59,7 +67,7 @@ const Header = (props) => {
         </Link>
       </Flex>
       <Box display={{base: "block", md: "none"}} onClick={toggleMenu}>
-        {show ? <CloseIcon/> : <HamburgerIcon/> }
+        {show ? <X/> : <MenuIcon/> }
       </Box>
       <Box
         display={{ base: show ? "block" : "none", md: "block"}}
@@ -74,6 +82,7 @@ const Navigation = () => {
   const { t } = useTranslation();
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { colorMode, toggleColorMode } = useColorMode();
 
   const onSignOut = async () => {
     await signOut();
@@ -93,12 +102,26 @@ const Navigation = () => {
             <Menu>
               <MenuButton
                 as={Button}
-                rightIcon={<ChevronDownIcon/>}>
+                rightIcon={<ChevronDown/>}>
                 {t("navigation.account")}
               </MenuButton>
               <MenuList>
-                <MenuItem onClick={() => navigate("/dashboard")}>{t("navigation.dashboard")}</MenuItem>
-                <MenuItem onClick={onSignOut}>{t("button.signout")}</MenuItem>
+                <MenuItem isDisabled>{user.email}</MenuItem>
+                <MenuItem 
+                  icon={<Shield/>} 
+                  onClick={() => navigate("/dashboard")}>
+                  {t("navigation.dashboard")}
+                </MenuItem>
+                <MenuItem 
+                  icon={colorMode === 'dark' ? <Sun/> : <Moon/>}
+                  onClick={() => toggleColorMode()}>
+                  {t(colorMode === 'dark' ? 'button-switch-light' : 'button.switch-dark')}
+                </MenuItem>
+                <MenuItem 
+                  icon={<LogOut/>} 
+                  onClick={onSignOut}>
+                  {t("button.signout")}
+                </MenuItem>
               </MenuList>
             </Menu>
           : <NavigationItem to="/signin">
