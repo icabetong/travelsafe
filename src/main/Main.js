@@ -1,72 +1,89 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
-import { 
+import {
   Box,
   Button,
-  Flex, 
+  Flex,
   Stack,
-  useColorMode
+  useToast,
+  useBreakpointValue
 } from "@chakra-ui/react";
-import { ReactComponent as Hero } from "../assets/travelers.svg";
 import Page from "../shared/custom/Page";
+import QRCode from "qrcode.react";
 import { useAuth } from "../auth/Provider";
+import Scanner from "../scan/Scanner";
 
 function Main() {
   const { t } = useTranslation();
-  const { colorMode } = useColorMode();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+  const size = useBreakpointValue({base: 256});
+  const [data, setData] = useState();
+  const [scan, setScan] = useState(false);
+  const toast = useToast();
+
+  const onScanInvoke = () => setScan(true);
+  const onScanDismiss = () => setScan(false);
+  const onScanError = () => {
+    toast({
+      title: t("feedback.scan-error"),
+      status: "error",
+      isClosable: true,
+    });
+  }
 
   return (
-    <Page includeFooter>
+    <Page title={t("concat.welcome", {name: profile.firstname})}>
       <Flex
         direction={{base: "column", md: "row-reverse"}}
-        align="center">
-        <Box
-          as={Hero}
-          color="teal.500"
-          width={{base: "xs", sm: "sm", md: "md"}}
-          minWidth={{base: "xs", sm: "sm", md: "md"}}/>
-        <Stack
-          p={8}
-          mt={{base: 8, md: 0}}
-          mr={{base: 0, md: 16}}>
+        align="center"
+        justifyContent="space-around">
+        <Stack>
+          <Box>{t("info.your-qr-code")}</Box>
           <Box
-            fontSize={{base: "3xl", md: "5xl"}}
-            fontWeight="semibold">
-            {t("home.heading")}
-          </Box>
+            as={QRCode}
+            value={user.id}
+            size={size}
+            width={{base: "xs", md: "md"}}
+            height={{base: "xs", md: "md"}}
+            p={4}
+            border="1px"
+            borderRadius="md"
+            borderColor="gray.500"/>
           <Box
-            color={colorMode === 'dark' ? "gray.400" : "gray.500"}>
-            {t("home.subheading")}
-          </Box>
-          <Box
-            as="span" 
-            py={8}>
-            { user
-              ? <Button>{t("button.go-to-dashboard")}</Button>
-              : <>
-                  <Button
-                    onClick={() => navigate("/signin")}>
-                    {t("button.sign-in")}
-                  </Button>
-                  <Box 
-                    ml={2}
-                    mr={1} 
-                    as="span" 
-                    color={colorMode === 'dark' ? "gray.500" : "gray.600"}>
-                    {t("concat.or")}
-                  </Box>
-                  <Box as="span">
-                    <Link to="/signup">{t("button.create-an-account")}</Link>
-                  </Box>
-                </>
-            }
+            mt={2}
+            color="gray.500"
+            fontSize="sm"
+            textAlign="center">
+            {t("info.qr-code-save")}
           </Box>
         </Stack>
+        <Box w={{base: 0, md: 16}}/>
+        <Stack>
+          <Button
+            mt={8}
+            onClick={onScanInvoke}>
+            {t("button.scan-qr-code")}
+          </Button>
+          <Button
+            variant="ghost"
+            colorScheme="gray"
+            fontSize="sm"
+            onClick={() => navigate("/account")}>
+            {t("button.update-account-information")}
+          </Button>
+        </Stack>
       </Flex>
+      {scan &&
+        <Scanner
+          open={scan}
+          onClose={onScanDismiss}
+          onDataCapture={setData}
+          onDataError={onScanError}/>
+      }
     </Page>
-  )
+  );
 }
 
 export default Main;

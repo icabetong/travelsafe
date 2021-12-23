@@ -26,7 +26,8 @@ function Scanner(props) {
         <ModalBody>
           <Box>
             <QrReader
-              onScan={props.onDataCapture}/>
+              onScan={props.onDataCapture}
+              onError={props.onDataError}/>
           </Box>
         </ModalBody>
         <ModalFooter>

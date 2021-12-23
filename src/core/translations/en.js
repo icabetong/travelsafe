@@ -27,6 +27,7 @@ const english = {
       "sign-in": "Sign-in",
       "sign-up": "Sign-up",
       "sign-out": "Sign-out",
+      "save": "Save",
       "switch-light": "Switch to Light",
       "switch-dark": "Switch to Dark",
       "create-an-account": "Create an Account",
@@ -35,7 +36,7 @@ const english = {
       "scan-qr-code": "Scan QR Code",
       "update-account-information": "Update Account Information"
     },
-    "account": {
+    "types": {
       "male": "Male",
       "female": "Female",
       "passenger": "Passenger",
@@ -53,7 +54,13 @@ const english = {
       "heading": "Ride safely and effortlessly",
       "subheading": "Nobody enjoys filling-up forms for every ride they take, we will do the heavy lifting for you, so you can be focused on being safe."
     },
+    "account": {
+      "information": "Information",
+      "security": "Security",
+      "travels": "Travels",
+    },
     "concat": {
+      "welcome": "Welcome, {{name}}",
       "or": "or"
     }
   }

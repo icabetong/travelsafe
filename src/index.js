@@ -3,13 +3,16 @@ import ReactDOM from 'react-dom';
 import '@fontsource/montserrat';
 import './index.css';
 import './localization';
+import { AuthProvider } from "./auth/Provider";
 import Core from "./core/Core";
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Core/>
+    <AuthProvider>
+      <Core/>
+    </AuthProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -48,7 +48,7 @@ function SignIn() {
     if (user && !error) {
       let { data } = await supabase.from('accounts').select().eq('id', user.id);
       if (data && data.length > 0) {
-        navigate("/dashboard");
+        navigate("/");
       } else {
         setExists(user.id);
       }
@@ -71,15 +71,15 @@ function SignIn() {
 
     let { error } = await supabase.from('accounts').insert([user]);
     setSubmitting(false);
-    if (!error) {
-      navigate("/dashboard");
-    } else {
+    if (error) {
       toast({
         title: t("feedback.sign-in-error"),
         desc: error,
         status: "error",
         isClosable: true,
       });
+    } else {
+      navigate("/")
     }
   }
 
@@ -243,8 +243,8 @@ function InfoForm(props) {
       <FormControl mb={2}>
         <FormLabel htmlFor='gender'>{t("field.gender")}</FormLabel>
         <Select id='gender' placeholder={t("placeholder.gender")} {...register("gender", { required: "feedback.auth_empty_gender"})}>
-          <option value="male">{t("account.male")}</option>
-          <option value="female">{t("account.female")}</option>
+          <option value="male">{t("types.male")}</option>
+          <option value="female">{t("types.female")}</option>
         </Select>
       </FormControl>
       <FormControl mb={2}>
@@ -298,8 +298,8 @@ function InfoForm(props) {
       <FormControl mb={8}>
         <FormLabel htmlFor='type'>{t("field.type")}</FormLabel>
         <Select id='type' placeholder={t("placeholder.type")} {...register("type", { required: "feedback.auth_empty_type"})}>
-          <option value="passenger">{t("account.passenger")}</option>
-          <option value="driver">{t("account.driver")}</option>
+          <option value="passenger">{t("types.passenger")}</option>
+          <option value="driver">{t("types.driver")}</option>
         </Select>
       </FormControl>
       <Button
@@ -307,7 +307,7 @@ function InfoForm(props) {
         maxW="60%"
         isLoading={props.submitting}
         type="submit">
-        {t("button.sign-up")}
+        {t("button.save")}
       </Button>
     </Flex>
   );

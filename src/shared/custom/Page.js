@@ -21,7 +21,7 @@ const Page = (props) => {
           <Box
             as="h4"
             px={8}
-            fontSize={{base: 'md', md: '3xl'}}
+            fontSize={{base: 'xl', md: '3xl'}}
             fontWeight="semibold">
             {title}
           </Box>

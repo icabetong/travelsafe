@@ -20,6 +20,7 @@ import {
   Moon,
   Sun,
   User,
+  MoreVertical,
 } from "react-feather";
 import { useAuth } from "../../auth/Provider";
 
@@ -100,26 +101,26 @@ const Navigation = () => {
       <Menu>
         <MenuButton
           as={IconButton}
-          icon={<User/>}>
-          {t("navigation.account")}
-        </MenuButton>
+          icon={<MoreVertical/>}/>
         <MenuList>
           <MenuItem isDisabled>{user && user.email}</MenuItem>
           <MenuItem 
-            icon={<Shield/>} 
-            onClick={() => navigate("/dashboard")}>
-            {t("navigation.dashboard")}
+            icon={<User/>} 
+            onClick={() => navigate("/account")}>
+            {t("navigation.account")}
           </MenuItem>
           <MenuItem 
             icon={colorMode === 'dark' ? <Sun/> : <Moon/>}
             onClick={() => toggleColorMode()}>
             {t(colorMode === 'dark' ? 'button.switch-light' : 'button.switch-dark')}
           </MenuItem>
-          <MenuItem 
-            icon={<LogOut/>} 
-            onClick={onSignOut}>
-            {t("button.sign-out")}
-          </MenuItem>
+          { user &&
+              <MenuItem 
+                icon={<LogOut/>} 
+                onClick={onSignOut}>
+                {t("button.sign-out")}
+              </MenuItem>
+          }
         </MenuList>
       </Menu>
     );

@@ -5,6 +5,7 @@ const AuthContext = React.createContext();
 
 export function AuthProvider({children}) {
   const [user, setUser] = useState();
+  const [profile, setProfile] = useState();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,6 +18,12 @@ export function AuthProvider({children}) {
       async (_, session) => {
         setUser(session?.user ?? null);
         setLoading(false);
+
+        const { data: result } = await supabase
+          .from('accounts').select().eq('id', session?.user.id);
+        if (result && result.length > 0) {
+          setProfile(result[0]);
+        }
       }
     );
 
@@ -30,6 +37,7 @@ export function AuthProvider({children}) {
     signIn: (data) => supabase.auth.signIn(data),
     signOut: () => supabase.auth.signOut(),
     user,
+    profile,
   }
 
   return (
