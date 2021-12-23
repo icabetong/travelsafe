@@ -14,8 +14,8 @@ import {
   useColorMode,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { 
-  Shield, 
+import {
+  Layout,
   LogOut,
   Moon,
   Sun,
@@ -81,7 +81,7 @@ const Header = (props) => {
 
 const Navigation = () => {
   const { t } = useTranslation();
-  const { user, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { colorMode, toggleColorMode } = useColorMode();
@@ -109,6 +109,12 @@ const Navigation = () => {
             onClick={() => navigate("/account")}>
             {t("navigation.account")}
           </MenuItem>
+          { profile.type === 'driver' &&
+            <MenuItem
+              icon={<Layout/>}>
+              {t("navigation.dashboard")}
+            </MenuItem>
+          }
           <MenuItem 
             icon={colorMode === 'dark' ? <Sun/> : <Moon/>}
             onClick={() => toggleColorMode()}>

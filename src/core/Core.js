@@ -44,6 +44,14 @@ function Core() {
               </ConditionalRoute>
           }/>
           <Route 
+            path="/dashboard" 
+            element={
+              <ConditionalRoute 
+                to="/signin">
+                <Dashboard/>
+              </ConditionalRoute>
+          }/>
+          <Route 
             path="/console" 
             element={
               <ConditionalRoute 

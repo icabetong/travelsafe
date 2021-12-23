@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import {  
@@ -35,7 +35,7 @@ import supabase from "../core/Infrastructure";
 function SignIn() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, signIn } = useAuth();
+  const { signIn } = useAuth();
   const toast = useToast();
   const [submitting, setSubmitting] = useState(false);
   const [exists, setExists] = useState();

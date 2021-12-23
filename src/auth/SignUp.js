@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import {  
@@ -27,7 +27,7 @@ import { useAuth } from "./Provider";
 
 function SignUp() {
   const { t } = useTranslation();
-  const { user, signUp } = useAuth();
+  const { signUp } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);

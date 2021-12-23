@@ -19,7 +19,6 @@ function Main() {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
   const size = useBreakpointValue({base: 256});
-  const [data, setData] = useState();
   const [scan, setScan] = useState(false);
   const toast = useToast();
 
@@ -31,6 +30,10 @@ function Main() {
       status: "error",
       isClosable: true,
     });
+  }
+
+  const onDataCaptured = (data) => {
+
   }
 
   return (
@@ -79,7 +82,7 @@ function Main() {
         <Scanner
           open={scan}
           onClose={onScanDismiss}
-          onDataCapture={setData}
+          onDataCapture={onDataCaptured}
           onDataError={onScanError}/>
       }
     </Page>
