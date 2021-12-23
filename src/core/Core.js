@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 import About from "../about/About";
+import Account from "../account/Account";
 import Console from "../console/Console";
 import Dashboard from "../dashboard/Dashboard";
 import Main from "../main/Main";
@@ -20,8 +21,9 @@ function Core() {
             <Route path="/about" element={<About/>}/>
             <Route path="/signin" element={<SignIn/>}/>
             <Route path="/signup" element={<SignUp/>}/>
-            <Route path="/dashboard" element={<PrivateRoute to="/signin"><Dashboard/></PrivateRoute>}/>
-            <Route path="/console" element={<PrivateRoute to="/signin"><Console/></PrivateRoute>}/>
+            <Route path="/dashboard" element={<PrivateRoute><Dashboard/></PrivateRoute>}/>
+            <Route path="/account" element={<PrivateRoute><Account/></PrivateRoute>}/>
+            <Route path="/console" element={<PrivateRoute><Console/></PrivateRoute>}/>
           </Routes>
         </BrowserRouter>
       </AuthProvider>

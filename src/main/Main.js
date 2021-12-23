@@ -18,7 +18,7 @@ function Main() {
   const { user } = useAuth();
 
   return (
-    <Page>
+    <Page includeFooter>
       <Flex
         direction={{base: "column", md: "row-reverse"}}
         align="center">

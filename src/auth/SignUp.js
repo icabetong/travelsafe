@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import {  
@@ -20,13 +20,14 @@ import {
   ModalCloseButton,
   useToast,
   useDisclosure,
+  useColorMode
 } from "@chakra-ui/react";
 import Page from "../shared/custom/Page";
 import { useAuth } from "./Provider";
 
 function SignUp() {
   const { t } = useTranslation();
-  const { signUp } = useAuth();
+  const { user, signUp } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
@@ -51,34 +52,37 @@ function SignUp() {
   }
 
   return (
-    <Page>
-      <Center
-        w="100%">
-        <AuthForm onSubmit={onSubmit} submitting={submitting}/>
-      </Center>
-      <Modal isOpen={open} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{t("auth.sign-up-confirm")}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Box>
-              {t("auth.sign-up-subtitle-confirm")}
-            </Box>
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={() => navigate("/")}>
-              {t("button.back-to-home")}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </Page>
+    user
+      ? <Navigate to="/dashboard"/>
+      : <Page>
+          <Center
+            w="100%">
+            <AuthForm onSubmit={onSubmit} submitting={submitting}/>
+          </Center>
+          <Modal isOpen={open} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>{t("auth.sign-up-confirm")}</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Box>
+                  {t("auth.sign-up-subtitle-confirm")}
+                </Box>
+              </ModalBody>
+              <ModalFooter>
+                <Button onClick={() => navigate("/")}>
+                  {t("button.back-to-home")}
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+        </Page>
   );
 }
 
 function AuthForm(props) {
   const { t } = useTranslation();
+  const { colorMode } = useColorMode();
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors }, getValues } = useForm();
 
@@ -102,7 +106,8 @@ function AuthForm(props) {
         {t("auth.sign-up")}
       </Box>
       <Box
-        mb={8}>
+        mb={8}
+        color={colorMode === 'dark' ? 'gray.400' : 'gray.500'}>
         {t("auth.sign-up-subtitle")}
       </Box>
       <FormControl mb={2} isInvalid={errors.email && errors.email} isRequired>

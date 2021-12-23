@@ -3,12 +3,20 @@ const english = {
     "app_name": "TravelSafe",
     "navigation": {
       "about": "About",
+      "account": "Account",
       "dashboard": "Dashboard",
       "console": "Console",
     },
     "field": {
       "email": "Email",
       "password": "Password",
+      "lastname": "Last Name",
+      "firstname": "First Name",
+      "address": "Address",
+      "contact": "Contact No.",
+      "birthdate": "Birthdate",
+      "gender": "Gender",
+      "type": "Type"
     },
     "placeholder": {
       "email": "example@gmail.com",
@@ -25,11 +33,19 @@ const english = {
       "use-an-existing-account": "Use an existing account",
       "go-to-dashboard": "Go to Dashboard"
     },
+    "account": {
+      "male": "Male",
+      "female": "Female",
+      "passenger": "Passenger",
+      "driver": "Driver",
+    },
     "auth": {
-      "sign-in": "Sign-in",
-      "sign-in-subtitle": "",
-      "sign-up": "Sign-up",
-      "sign-up-subtitle": "",
+      "sign-in": "Sign-in with your account",
+      "sign-in-subtitle": "Enter your credentials to continue",
+      "sign-up": "Sign-up with a new account",
+      "sign-up-subtitle": "Glad you are onboard with us!",
+      "few-more-info": "We'll need a few more info",
+      "few-more-info_subtitle": "Don't worry you'll be doing this just once."
     },
     "home": {
       "heading": "Ride safely and effortlessly",

@@ -1,7 +1,8 @@
 import { extendTheme, withDefaultColorScheme } from "@chakra-ui/react";
 
+const font = 'Montserrat';
 const config = {
-  initialColorMode: 'dark',
+  initialColorMode: 'light',
   useSystemColorMode: true,
 }
 const theme = extendTheme(
@@ -10,8 +11,8 @@ const theme = extendTheme(
   }),{
     config,
     fonts: {
-      heading: "Readex Pro",
-      body: "Readex Pro"
+      heading: font,
+      body: font
     }
   }
 );

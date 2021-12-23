@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import {  
@@ -12,6 +12,7 @@ import {
   Input,
   Select,
   useToast,
+  useColorMode
 } from "@chakra-ui/react";
 import Page from "../shared/custom/Page";
 import { useAuth } from "./Provider";
@@ -20,7 +21,7 @@ import supabase from "../core/Infrastructure";
 function SignIn() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { signIn } = useAuth();
+  const { user, signIn } = useAuth();
   const toast = useToast();
   const [submitting, setSubmitting] = useState(false);
   const [exists, setExists] = useState();
@@ -70,17 +71,20 @@ function SignIn() {
   }
 
   return (
-    <Page>
-      { exists
-        ? <InfoForm onSubmit={onContinueSubmit} submitting={submitting}/>
-        : <AuthForm onSubmit={onSubmit} submitting={submitting}/>
-      }
-    </Page>
+    user 
+      ? <Navigate to="/dashboard"/>
+      : <Page>
+        { exists
+          ? <InfoForm onSubmit={onContinueSubmit} submitting={submitting}/>
+          : <AuthForm onSubmit={onSubmit} submitting={submitting}/>
+        }
+      </Page>
   );
 }
 
 function AuthForm(props) {
   const { t } = useTranslation();
+  const { colorMode } = useColorMode(); 
   const { handleSubmit, register, formState: { errors } } = useForm();
   const navigate = useNavigate();
 
@@ -104,7 +108,8 @@ function AuthForm(props) {
         {t("auth.sign-in")}
       </Box>
       <Box
-        mb={8}>
+        mb={8}
+        color={colorMode === 'dark' ? 'gray.400' : 'gray.500'}>
         {t("auth.sign-in-subtitle")}
       </Box>
       <FormControl mb={2} isInvalid={errors.email && errors.email} isRequired>
@@ -143,6 +148,7 @@ function AuthForm(props) {
 
 function InfoForm(props) {
   const { t } = useTranslation();
+  const { colorMode } = useColorMode();
   const { register, handleSubmit, formState: { errors }, getValues } = useForm();
 
   return (
@@ -162,11 +168,12 @@ function InfoForm(props) {
         as="h4"
         fontSize="2xl"
         fontWeight="semibold">
-        {t("auth.sign-up")}
+        {t("auth.few-more-info")}
       </Box>
       <Box
-        mb={8}>
-        {t("auth.sign-up-subtitle")}
+        mb={8}
+        color={colorMode === 'dark' ? 'gray.400' : 'gray.500'}>
+        {t("auth.few-more-info-subtitle")}
       </Box>
       <FormControl mb={2} isInvalid={errors.lastname && errors.lastname} isRequired>
         <FormLabel htmlFor='lastname'>{t("field.lastname")}</FormLabel>
