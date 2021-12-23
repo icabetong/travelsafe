@@ -52,31 +52,29 @@ function SignUp() {
   }
 
   return (
-    user
-      ? <Navigate to="/dashboard"/>
-      : <Page>
-          <Center
-            w="100%">
-            <AuthForm onSubmit={onSubmit} submitting={submitting}/>
-          </Center>
-          <Modal isOpen={open} onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>{t("auth.sign-up-confirm")}</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <Box>
-                  {t("auth.sign-up-subtitle-confirm")}
-                </Box>
-              </ModalBody>
-              <ModalFooter>
-                <Button onClick={() => navigate("/")}>
-                  {t("button.back-to-home")}
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-        </Page>
+    <Page>
+      <Center
+        w="100%">
+        <AuthForm onSubmit={onSubmit} submitting={submitting}/>
+      </Center>
+      <Modal isOpen={open} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{t("auth.sign-up-confirm")}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box>
+              {t("auth.sign-up-subtitle-confirm")}
+            </Box>
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={() => navigate("/")}>
+              {t("button.back-to-home")}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </Page>
   );
 }
 
@@ -97,7 +95,7 @@ function AuthForm(props) {
       align="center"
       justify="center"
       border="1px"
-      borderColor="gray.500"
+      borderColor={colorMode === 'dark' ? "gray.500" : "gray.300"}
       borderRadius="md">
       <Box
         as="h4"

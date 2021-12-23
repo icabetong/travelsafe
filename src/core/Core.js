@@ -9,7 +9,7 @@ import SignIn from "../auth/SignIn";
 import SignUp from "../auth/SignUp";
 import theme from "../shared/Theme";
 import { AuthProvider } from "../auth/Provider";
-import PrivateRoute from "../shared/custom/PrivateRoute";
+import ConditionalRoute from "../shared/custom/ConditionalRoute";
 
 function Core() {
   return (
@@ -19,11 +19,40 @@ function Core() {
           <Routes>
             <Route path="/" element={<Main/>} exact/>
             <Route path="/about" element={<About/>}/>
-            <Route path="/signin" element={<SignIn/>}/>
-            <Route path="/signup" element={<SignUp/>}/>
-            <Route path="/dashboard" element={<PrivateRoute><Dashboard/></PrivateRoute>}/>
-            <Route path="/account" element={<PrivateRoute><Account/></PrivateRoute>}/>
-            <Route path="/console" element={<PrivateRoute><Console/></PrivateRoute>}/>
+            <Route 
+              path="/signin" 
+              element={
+              <SignIn/>
+            }/>
+            <Route 
+              path="/signup" 
+              element={
+                <SignUp/>
+            }/>
+            <Route 
+              path="/dashboard" 
+              element={
+                <ConditionalRoute 
+                  to="/signin">
+                  <Dashboard/>
+                </ConditionalRoute>
+            }/>
+            <Route 
+              path="/account" 
+              element={
+                <ConditionalRoute 
+                  to="/signin">
+                  <Account/>
+                </ConditionalRoute>
+            }/>
+            <Route 
+              path="/console" 
+              element={
+                <ConditionalRoute 
+                  to="/signin">
+                  <Console/>
+                </ConditionalRoute>
+            }/>
           </Routes>
         </BrowserRouter>
       </AuthProvider>

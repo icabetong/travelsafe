@@ -31,7 +31,7 @@ const NavigationItem = (props) => {
       mb={{base: isLast ? 0 : 8, sm: 0}}
       mr={{base: 0, sm: isLast ? 0 : 8}}
       display="block"
-      fontWeight="medium"
+      fontWeight={600}
       bg={["teal.500", "teal.500", "transparent", "transparent"]}
       color={["white", "white", "teal.500", "teal.500"]}
       {...rest}>
@@ -50,7 +50,7 @@ const Header = (props) => {
       align="center"
       justify="space-between"
       w="100%"
-      mb={{base: 2, md: 8}}
+      mb={2}
       p={4}
       {...props} >
       <Flex 
@@ -88,7 +88,6 @@ const Navigation = () => {
 
   const onSignOut = async () => {
     await signOut();
-    console.log(location);
     if (location.pathname === '/account' 
         || location.pathname === '/dashboard' 
         || location.pathname === '/console') {

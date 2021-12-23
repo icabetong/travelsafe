@@ -31,7 +31,9 @@ const english = {
       "switch-dark": "Switch to Dark",
       "create-an-account": "Create an Account",
       "use-an-existing-account": "Use an existing account",
-      "go-to-dashboard": "Go to Dashboard"
+      "go-to-dashboard": "Go to Dashboard",
+      "scan-qr-code": "Scan QR Code",
+      "update-account-information": "Update Account Information"
     },
     "account": {
       "male": "Male",

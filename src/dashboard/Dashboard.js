@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -10,15 +11,22 @@ import {
 import Page from "../shared/custom/Page";
 import QRCode from "qrcode.react";
 import { useAuth } from "../auth/Provider";
+import Scanner from "../scan/Scanner";
 
 function Dashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const size = useBreakpointValue({base: 128, md: 256, lg: 512});
+  const size = useBreakpointValue({base: 256});
+  const [data, setData] = useState();
+  const [scan, setScan] = useState(false);
+
+  const onScanInvoke = () => setScan(true);
+  const onScanDismiss = () => setScan(false);
 
   return (
     <Page title={t("navigation.dashboard")}>
+      {console.log(data)}
       <Flex
         direction={{base: "column", md: "row-reverse"}}
         align="center"
@@ -46,18 +54,26 @@ function Dashboard() {
         <Box w={{base: 0, md: 16}}/>
         <Stack>
           <Button
-            mt={8}>
+            mt={8}
+            onClick={onScanInvoke}>
             {t("button.scan-qr-code")}
           </Button>
           <Button
             mt={4}
             variant="outline"
             colorScheme="gray"
+            fontSize="sm"
             onClick={() => navigate("/account")}>
             {t("button.update-account-information")}
           </Button>
         </Stack>
       </Flex>
+      {scan &&
+        <Scanner
+          open={scan}
+          onClose={onScanDismiss}
+          onDataCapture={setData}/>
+      }
     </Page>
   );
 }

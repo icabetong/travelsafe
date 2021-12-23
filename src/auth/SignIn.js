@@ -9,11 +9,25 @@ import {
   FormControl,
   FormLabel,
   FormErrorMessage,
+  IconButton,
   Input,
+  InputGroup,
+  InputRightElement,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverArrow,
+  PopoverCloseButton,
   Select,
+  Stack,
   useToast,
   useColorMode
 } from "@chakra-ui/react";
+import { Calendar as DateIcon } from "react-feather";
+import { Calendar } from "@uselessdev/datepicker";
+import { format } from "date-fns";
 import Page from "../shared/custom/Page";
 import { useAuth } from "./Provider";
 import supabase from "../core/Infrastructure";
@@ -50,7 +64,6 @@ function SignIn() {
 
   const onContinueSubmit = async (data) => {
     setSubmitting(true);
-    console.log(data);
     const user = {
       id: exists,
       ...data
@@ -71,14 +84,12 @@ function SignIn() {
   }
 
   return (
-    user 
-      ? <Navigate to="/dashboard"/>
-      : <Page>
-        { exists
-          ? <InfoForm onSubmit={onContinueSubmit} submitting={submitting}/>
-          : <AuthForm onSubmit={onSubmit} submitting={submitting}/>
-        }
-      </Page>
+    <Page>
+      { exists
+        ? <InfoForm onSubmit={onContinueSubmit} submitting={submitting}/>
+        : <AuthForm onSubmit={onSubmit} submitting={submitting}/>
+      }
+    </Page>
   );
 }
 
@@ -99,7 +110,7 @@ function AuthForm(props) {
       align="center"
       justify="center"
       border="1px"
-      borderColor="gray.500"
+      borderColor={colorMode === 'dark' ? "gray.500" : "gray.300"}
       borderRadius="md">
       <Box
         as="h4"
@@ -149,6 +160,7 @@ function AuthForm(props) {
 function InfoForm(props) {
   const { t } = useTranslation();
   const { colorMode } = useColorMode();
+  const [date, setDate] = useState(new Date());
   const { register, handleSubmit, formState: { errors }, getValues } = useForm();
 
   return (
@@ -162,7 +174,7 @@ function InfoForm(props) {
       align="center"
       justify="center"
       border="1px"
-      borderColor="gray.500"
+      borderColor={colorMode === 'dark' ? "gray.500" : "gray.300"}
       borderRadius="md">
       <Box
         as="h4"
@@ -223,6 +235,40 @@ function InfoForm(props) {
           <option value="male">{t("account.male")}</option>
           <option value="female">{t("account.female")}</option>
         </Select>
+      </FormControl>
+      <FormControl mb={2}>
+        <FormLabel htmlFor='birthdate'>{t("field.birthdate")}</FormLabel>
+        <Popover>
+          <PopoverTrigger>
+            <Stack>
+              <InputGroup>
+                <Input pr="2.5rem" value={format(date, "MMMM d yyyy")} readOnly/>
+                <InputRightElement width="2.5rem">
+                  <IconButton 
+                    size='sm' 
+                    variant='ghost'
+                    colorScheme="gray" 
+                    icon={<DateIcon/>}/>
+                </InputRightElement>
+              </InputGroup>
+            </Stack>
+          </PopoverTrigger>
+          <PopoverContent >
+            <PopoverArrow />
+            <PopoverCloseButton />
+            <PopoverHeader>{t("dialog.select-date")}</PopoverHeader>
+            <PopoverBody
+              paddingInlineStart={0}
+              paddingInlineEnd={0}>
+              <Calendar
+                value={date}
+                singleMonth
+                singleDateSelection
+                onSelectDate={setDate}/>
+            </PopoverBody>
+          </PopoverContent>
+        </Popover>
+        
       </FormControl>
       <FormControl mb={2} isInvalid={errors.contact && errors.contact} isRequired>
         <FormLabel htmlFor='contact'>{t("field.contact")}</FormLabel>
