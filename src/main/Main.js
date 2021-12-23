@@ -28,7 +28,7 @@ function Main() {
           width={{base: "xs", sm: "sm", md: "md"}}
           minWidth={{base: "xs", sm: "sm", md: "md"}}/>
         <Stack
-          p={{base: 4, md: 8}}
+          p={8}
           mt={{base: 8, md: 0}}
           mr={{base: 0, md: 16}}>
           <Box
