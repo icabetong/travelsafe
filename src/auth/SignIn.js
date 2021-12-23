@@ -86,8 +86,12 @@ function SignIn() {
   return (
     <Page>
       { exists
-        ? <InfoForm onSubmit={onContinueSubmit} submitting={submitting}/>
-        : <AuthForm onSubmit={onSubmit} submitting={submitting}/>
+        ? <InfoForm 
+            onSubmit={onContinueSubmit} 
+            submitting={submitting}/>
+        : <AuthForm 
+            onSubmit={onSubmit} 
+            submitting={submitting}/>
       }
     </Page>
   );
@@ -163,10 +167,17 @@ function InfoForm(props) {
   const [date, setDate] = useState(new Date());
   const { register, handleSubmit, formState: { errors }, getValues } = useForm();
 
+  const onSubmit = (data) => {
+    props.onSubmit({
+      birthdate: date.toISOString().toLocaleString('en-US'),
+      ...data
+    })
+  }
+
   return (
     <Flex
       as="form"
-      onSubmit={handleSubmit(props.onSubmit)}
+      onSubmit={handleSubmit(onSubmit)}
       direction="column"
       w={{base: "80%", md: "40%"}}
       maxW={{base: "80%", md: "40%"}}
