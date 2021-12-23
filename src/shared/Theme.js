@@ -10,8 +10,8 @@ const theme = extendTheme(
   }),{
     config,
     fonts: {
-      heading: "Inter",
-      body: "Inter"
+      heading: "Readex Pro",
+      body: "Readex Pro"
     }
   }
 );

@@ -4,7 +4,7 @@ import { useAuth } from "../../auth/Provider";
 function PrivateRoute(props) {
   const { children, to } = props;
 
-  const auth = useAuth();
-  return auth ? children : <Navigate to={to}/>
+  const { user } = useAuth();
+  return user ? children : <Navigate to={to}/>
 }
 export default PrivateRoute;

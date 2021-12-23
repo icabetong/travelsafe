@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import '@fontsource/inter';
+import '@fontsource/readex-pro';
 import './index.css';
 import './localization';
 import Core from "./core/Core";

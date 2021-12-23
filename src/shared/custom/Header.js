@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { 
   Box,
@@ -82,12 +82,18 @@ const Navigation = () => {
   const { t } = useTranslation();
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { colorMode, toggleColorMode } = useColorMode();
   const variant = useBreakpointValue({base: true, md: false});
 
   const onSignOut = async () => {
     await signOut();
-    navigate("/signin");
+    console.log(location);
+    if (location.pathname === '/account' 
+        || location.pathname === '/dashboard' 
+        || location.pathname === '/console') {
+      navigate('/');
+    }
   }
 
   const AccountMenu = () => {
