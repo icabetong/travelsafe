@@ -44,6 +44,7 @@ const NavigationItem = (props) => {
 const Header = (props) => {
   const { t } = useTranslation();
   const variant = useBreakpointValue({base: true, md: false});
+  const { colorMode } = useColorMode();
 
   return (
     <Flex
@@ -61,8 +62,9 @@ const Header = (props) => {
           <Text 
             mx={4} 
             as="h4" 
-            fontWeight="medium" 
-            fontSize={{base: 'lg', md: "2xl"}}>
+            color={colorMode === 'dark' ? "teal.300" : 'teal.500'}
+            fontWeight="bold"
+            fontSize={{base: 'xl', md: "2xl"}}>
             {t("app_name")}
           </Text>
         </Link>
@@ -109,7 +111,7 @@ const Navigation = () => {
             onClick={() => navigate("/account")}>
             {t("navigation.account")}
           </MenuItem>
-          { profile.type === 'driver' &&
+          { profile && profile.type === 'driver' &&
             <MenuItem
               icon={<Layout/>}>
               {t("navigation.dashboard")}

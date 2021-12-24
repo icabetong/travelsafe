@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import '@fontsource/montserrat';
+import '@fontsource/source-sans-pro';
 import './index.css';
 import './localization';
 import { AuthProvider } from "./auth/Provider";

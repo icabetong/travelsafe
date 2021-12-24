@@ -24,7 +24,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Calendar } from "@uselessdev/datepicker";
-import { Calendar as DateIcon } from "react-feather";
+import { Calendar as DateIcon, ChevronLeft, ChevronRight } from "react-feather";
 import { format } from "date-fns";
 import supabase from "../../core/Infrastructure";
 import { useAuth } from "../../auth/Provider";
@@ -139,7 +139,19 @@ function InformationPanel() {
                 value={date}
                 singleMonth
                 singleDateSelection
-                onSelectDate={setDate}/>
+                onSelectDate={setDate}
+                prevButton={props => (
+                  <IconButton 
+                    size="xs"
+                    icon={<ChevronLeft/>}
+                    {...props}/>
+                )}
+                nextButton={props => (
+                  <IconButton
+                    size="xs"
+                    icon={<ChevronRight/>}
+                    {...props}/>
+                )}/>
             </PopoverBody>
           </PopoverContent>
         </Popover>

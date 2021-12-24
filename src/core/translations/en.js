@@ -28,6 +28,9 @@ const english = {
       "sign-up": "Sign-up",
       "sign-out": "Sign-out",
       "save": "Save",
+      "continue": "Continue",
+      "cancel": "Cancel",
+      "get-started": "Get Started",
       "switch-light": "Switch to Light",
       "switch-dark": "Switch to Dark",
       "create-an-account": "Create an Account",
@@ -58,6 +61,10 @@ const english = {
       "information": "Information",
       "security": "Security",
       "travels": "Travels",
+    },
+    "dialog": {
+      "send-password-reset-title": "Send Password Reset Email",
+      "send-password-reset-subtitle": "To reset your password, we'll send a reset link to your registered email address: <focus>{{email}}</focus>",
     },
     "concat": {
       "welcome": "Welcome, {{name}}",

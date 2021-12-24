@@ -25,7 +25,7 @@ import {
   useToast,
   useColorMode
 } from "@chakra-ui/react";
-import { Calendar as DateIcon } from "react-feather";
+import { Calendar as DateIcon, ChevronLeft, ChevronRight } from "react-feather";
 import { Calendar } from "@uselessdev/datepicker";
 import { format } from "date-fns";
 import Page from "../shared/custom/Page";
@@ -275,7 +275,19 @@ function InfoForm(props) {
                 value={date}
                 singleMonth
                 singleDateSelection
-                onSelectDate={setDate}/>
+                onSelectDate={setDate}
+                prevButton={props => (
+                  <IconButton 
+                    size="xs"
+                    icon={<ChevronLeft/>}
+                    {...props}/>
+                )}
+                nextButton={props => (
+                  <IconButton
+                    size="xs"
+                    icon={<ChevronRight/>}
+                    {...props}/>
+                )}/>
             </PopoverBody>
           </PopoverContent>
         </Popover>
