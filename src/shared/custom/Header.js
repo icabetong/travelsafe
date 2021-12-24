@@ -113,7 +113,8 @@ const Navigation = () => {
           </MenuItem>
           { profile && profile.type === 'driver' &&
             <MenuItem
-              icon={<Layout/>}>
+              icon={<Layout/>}
+              onClick={() => navigate('/dashboard')}>
               {t("navigation.dashboard")}
             </MenuItem>
           }
