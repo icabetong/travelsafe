@@ -22,7 +22,8 @@ function Footer() {
         px={16}
         py={8}
         direction={{base: "column", md: "row"}}
-        justify="space-between">
+        justify="space-between"
+        fontSize="sm">
         <Box color="gray.300">
           <Box>{t("app_name")}</Box>
           <Box>{t("footer.copyright")}</Box>
@@ -36,6 +37,7 @@ function Footer() {
               {t("navigation.about")}
             </Link>
             <Link 
+
               as={RouterLink} 
               to="/console">
               {t("navigation.console")}
