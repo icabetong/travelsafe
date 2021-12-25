@@ -18,6 +18,12 @@ const TravelsPanel = lazy(() => import('./panels/Travels'));
 function Account() {
   const { t } = useTranslation();
 
+  const fallback = (
+    <Box>
+      <Spinner/>
+    </Box>
+  )
+
   return (
     <Page title={t("navigation.account")}>
       <Box w="100%" minH="80vh" mt={4} px={{base: 4, md: 8}}>
@@ -30,17 +36,17 @@ function Account() {
 
           <TabPanels>
             <TabPanel>
-              <Suspense fallback={<Spinner/>}>
+              <Suspense fallback={fallback}>
                 <InformationPanel/>
               </Suspense>
             </TabPanel>
             <TabPanel>
-              <Suspense fallback={<Spinner/>}>
+              <Suspense fallback={fallback}>
                 <SecurityPanel/>
               </Suspense>
             </TabPanel>
             <TabPanel>
-              <Suspense fallback={<Spinner/>}>
+              <Suspense fallback={fallback}>
                 <TravelsPanel/>
               </Suspense>
             </TabPanel>

@@ -76,7 +76,7 @@ function Dashboard() {
         mt={12}
         direction={{base: "column-reverse", md: "row"}}>
         <DetailsPanel onSubmit={onSubmit} data={data} updating={updating}/>
-        <TravelPanel data={data}/>
+        <RoutesPanel data={data}/>
       </Flex>
     </Page>
   );
@@ -123,10 +123,10 @@ function DetailsPanel({onSubmit, data, updating}) {
   )
 }
 
-function TravelPanel({data}) {
+function RoutesPanel({data}) {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const [travel, setTravel] = useState();
+  const [route, setRoute] = useState();
   const [submitting, setSubmitting] = useState(false);
   const [updating, setUpdating] = useState(false);
   const toast = useToast();
@@ -136,7 +136,7 @@ function TravelPanel({data}) {
   useEffect(() => {
     const fetch = async () => {
       let { data, error } = await supabase
-        .from('travels')
+        .from('routes')
         .select()
         .eq('driverId', user.id)
         .eq('finished', false)
@@ -145,7 +145,7 @@ function TravelPanel({data}) {
         throw error;
 
       if (data.length > 0) {
-        setTravel(data[0]);
+        setRoute(data[0]);
       }
     }
 
@@ -155,7 +155,7 @@ function TravelPanel({data}) {
   const onUpdate = async () => {
     setUpdating(true);
    
-    let { error } = await supabase.from('travels').update({
+    let { error } = await supabase.from('routes').update({
       arrival: new Date().toISOString().toLocaleString('en-US'),
       finished: true
     });
@@ -167,7 +167,7 @@ function TravelPanel({data}) {
         isClosable: false,
       })
     } else {
-      setTravel(undefined);
+      setRoute(undefined);
     }
   }
 
@@ -179,7 +179,7 @@ function TravelPanel({data}) {
       ...data
     }
 
-    let { error } = await supabase.from('travels').insert(travel);
+    let { error } = await supabase.from('routes').insert(travel);
     setSubmitting(false);
     if (error) {
       toast({
@@ -188,7 +188,7 @@ function TravelPanel({data}) {
         isClosable: true,
       })
     } else {
-      setTravel(travel);
+      setRoute(travel);
     }
   }
 
@@ -227,9 +227,9 @@ function TravelPanel({data}) {
         <Input 
           id='source' 
           type='text'
-          isDisabled={travel}
+          isDisabled={route}
           placeholder={t("placeholder.source")}
-          defaultValue={travel && travel.source}
+          defaultValue={route && route.source}
           {...register('source')} />
         <FormErrorMessage>{t(errors.source && errors.source.message)}.</FormErrorMessage>
       </FormControl>
@@ -238,14 +238,14 @@ function TravelPanel({data}) {
         <Input 
           id='destination' 
           type='text'
-          isDisabled={travel}
+          isDisabled={route}
           placeholder={t("placeholder.destination")}
-          defaultValue={travel && travel.destination}
+          defaultValue={route && route.destination}
           {...register('destination')} />
         <FormErrorMessage>{t(errors.destination && errors.destination.message)}.</FormErrorMessage>
       </FormControl>
       <Box display="flex" justifyContent="end" w="100%">
-      { travel
+      { route
         ? <Button
             onClick={onUpdate}
             isLoading={updating}>

@@ -12,6 +12,7 @@ import {
   ModalBody,
   ModalCloseButton,
   useToast,
+  useColorMode,
 } from "@chakra-ui/react";
 import { useAuth } from "../../auth/Provider";
 import supabase from "../../core/Infrastructure";
@@ -20,6 +21,7 @@ function SecurityPanel() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const toast = useToast();
+  const { colorMode } = useColorMode();
   const [open, setOpen] = useState(false);
   const [sending, setSending] = useState(false);
   const onOpen = () => setOpen(true);
@@ -47,9 +49,14 @@ function SecurityPanel() {
 
   return (
     <Flex
-      direction="column">
-      <Box mb={2} fontSize="lg" fontWeight="medium">{t("account.password-reset")}</Box>
-      <Button onClick={onOpen}>{t("button.get-started")}</Button>
+      direction="column"
+      align="start">
+      <Box fontSize="lg" fontWeight="medium">{t("account.password-reset")}</Box>
+      <Box mb={4} color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}>{t("account.password-reset-subtitle")}</Box>
+      <Button 
+        onClick={onOpen}>
+          {t("button.get-started")}
+      </Button>
       { open &&
         <Modal isOpen={open} onClose={onClose} closeOnOverlayClick={!sending}>
           <ModalOverlay />

@@ -25,8 +25,8 @@ const english = {
       "email": "example@gmail.com",
       "password": "********",
       "confirm-password": "********",
-      "source": "San Jose",
-      "destination": "Lupao",
+      "source": "ex. San Jose",
+      "destination": "ex. Lupao",
     },
     "button": {
       "sign-in": "Sign-in",
@@ -69,6 +69,7 @@ const english = {
       "security": "Security",
       "travels": "Travels",
       "password-reset": "Password Reset",
+      "password-reset-subtitle": "If you forgot your password, you can reset it here."
     },
     "dashboard": {
       "vehicle-details": "Vehicle Details",
