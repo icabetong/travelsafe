@@ -68,6 +68,7 @@ const english = {
       "information": "Information",
       "security": "Security",
       "travels": "Travels",
+      "password-reset": "Password Reset",
     },
     "dashboard": {
       "vehicle-details": "Vehicle Details",

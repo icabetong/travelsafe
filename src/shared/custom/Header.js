@@ -106,11 +106,13 @@ const Navigation = () => {
           icon={<MoreVertical/>}/>
         <MenuList>
           <MenuItem isDisabled>{user && user.email}</MenuItem>
-          <MenuItem 
-            icon={<User/>} 
-            onClick={() => navigate("/account")}>
-            {t("navigation.account")}
-          </MenuItem>
+          { user &&
+            <MenuItem 
+              icon={<User/>} 
+              onClick={() => navigate("/account")}>
+              {t("navigation.account")}
+            </MenuItem>
+          }
           { profile && profile.type === 'driver' &&
             <MenuItem
               icon={<Layout/>}

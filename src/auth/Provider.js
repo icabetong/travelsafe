@@ -9,26 +9,28 @@ export function AuthProvider({children}) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const session = supabase.auth.session;
+    const init = async () => {
+      const user = supabase.auth.user();
 
-    setUser(session?.user ?? null);
-    setLoading(false);
+      setUser(user ?? null);
+      setLoading(false);
 
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      async (_, session) => {
-        setUser(session?.user ?? null);
-        setLoading(false);
-
-        const { data: result } = await supabase
-          .from('accounts').select().eq('id', session?.user.id);
-        if (result && result.length > 0) {
-          setProfile(result[0]);
-        }
+      const { data: result } = await supabase
+        .from('accounts').select().eq('id', user.id);
+      if (result && result.length > 0) {
+        setProfile(result[0]);
       }
-    );
+    }
+    
+    init();
+    supabase.auth.onAuthStateChange((event, session) => {
+      console.log("onAuthStateChange", { event, session });
+
+      if (event === 'SIGNED_IN') init();
+    });
 
     return () => {
-      listener?.unsubscribe();
+      supabase.removeSubscription();
     }
   }, []);
 
