@@ -13,6 +13,7 @@ import Page from "../shared/custom/Page";
 import QRCode from "qrcode.react";
 import { useAuth } from "../auth/Provider";
 import Scanner from "../scan/Scanner";
+import supabase from "../core/Infrastructure";
 
 function Main() {
   const { t } = useTranslation();
@@ -32,8 +33,36 @@ function Main() {
     });
   }
 
-  const onDataCaptured = (data) => {
+  const onDataCaptured = async (scanned) => {
+    console.log(scanned);
+    const onShowError = () => {
+      toast({
+        title: t("feedback.error-generic"),
+        status: "error",
+        isClosable: true
+      });
+    }
 
+    let { data, error } = await supabase
+      .from('routes')
+      .select()
+      .eq('driverId', scanned)
+      .eq('finished', false)
+      .single()
+    if (error) onShowError();
+
+    let { err } = await supabase.from('travels')
+      .insert({
+        routeId: data.routeId,
+        userId: user.id
+      });
+    if (!err) {
+      toast({
+        title: t("feedback.tracing-details-submitted"),
+        status: "success",
+        isClosable: true
+      })
+    } else onShowError() 
   }
 
   return (

@@ -66,8 +66,7 @@ function InformationPanel() {
       as="form"
       onSubmit={handleSubmit(onSubmit)}
       direction="column"
-      align="center"
-      justify="center">
+      align="center">
       <FormControl mb={2} isInvalid={errors.lastname && errors.lastname} isRequired>
         <FormLabel htmlFor='lastname'>{t("field.lastname")}</FormLabel>
         <Input 
