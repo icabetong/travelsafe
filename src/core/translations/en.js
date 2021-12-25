@@ -16,12 +16,17 @@ const english = {
       "contact": "Contact No.",
       "birthdate": "Birthdate",
       "gender": "Gender",
-      "type": "Type"
+      "type": "Type",
+      "vehicle-plate-number": "Plate Number",
+      "source": "Source",
+      "destination": "Destination",
     },
     "placeholder": {
       "email": "example@gmail.com",
       "password": "********",
-      "confirm-password": "********"
+      "confirm-password": "********",
+      "source": "San Jose",
+      "destination": "Lupao",
     },
     "button": {
       "sign-in": "Sign-in",
@@ -37,6 +42,8 @@ const english = {
       "use-an-existing-account": "Use an existing account",
       "go-to-dashboard": "Go to Dashboard",
       "scan-qr-code": "Scan QR Code",
+      "start-travel": "Start Travel",
+      "complete-travel": "Complete Travel",
       "update-account-information": "Update Account Information"
     },
     "types": {
@@ -61,6 +68,14 @@ const english = {
       "information": "Information",
       "security": "Security",
       "travels": "Travels",
+    },
+    "dashboard": {
+      "vehicle-details": "Vehicle Details",
+      "current-route": "Current Route",
+    },
+    "info": {
+      "about-routes": "Routes help us determine the passengers in case something bad happens.",
+      "missing-plate-number-no-travel": "You'll need to enter your vehicle's plate number first.",
     },
     "dialog": {
       "send-password-reset-title": "Send Password Reset Email",

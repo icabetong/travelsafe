@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import {
+  Box,
   Button,
   Flex,
   FormControl,
@@ -11,36 +12,20 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Stack,
   useToast,
+  useColorMode,
 } from "@chakra-ui/react";
+import { AlertOctagon } from "react-feather";
 import { useAuth } from "../auth/Provider";
 import Page from "../shared/custom/Page";
 import supabase from "../core/Infrastructure";
 
 function Dashboard() {
   const { t } = useTranslation();
-
-  return (
-    <Page title={t("navigation.dashboard")}>
-      <Flex 
-        w="100%"
-        h="80vh"
-        direction={{base: "column", md: "row"}}>
-        <DetailsPanel/>
-        <RoutesPanel/>
-      </Flex>
-    </Page>
-  );
-}
-
-function DetailsPanel() {
-  const { t } = useTranslation();
-  const [updating, setUpdating] = useState(false);
-  const [data, setData] = useState();
   const { user } = useAuth();
   const toast = useToast();
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const [updating, setUpdating] = useState(false);
+  const [data, setData] = useState();
 
   useEffect(() => {
     const fetch = async () => {
@@ -50,20 +35,13 @@ function DetailsPanel() {
         .eq('driverId', user.id)
         .single()
 
-      if (error) {
+      if (error)
         throw error;
-      }
 
       setData(data);
     }
 
-    fetch()
-      .catch((error) => toast({
-        title: error,
-        desc: error,
-        status: "error",
-        isClosable: true,
-      }));
+    fetch();
   }, [user.id, toast, t]);
 
   const onSubmit = async (data) => {
@@ -89,7 +67,25 @@ function DetailsPanel() {
       })
     }
   }
-  
+
+  return (
+    <Page title={t("navigation.dashboard")}>
+      <Flex 
+        w="100%"
+        h="80vh"
+        mt={12}
+        direction={{base: "column-reverse", md: "row"}}>
+        <DetailsPanel onSubmit={onSubmit} data={data} updating={updating}/>
+        <TravelPanel data={data}/>
+      </Flex>
+    </Page>
+  );
+}
+
+function DetailsPanel({onSubmit, data, updating}) {
+  const { t } = useTranslation();
+  const { register, handleSubmit, formState: { errors } } = useForm();
+
   return (
     <Flex 
       as="form" 
@@ -99,8 +95,8 @@ function DetailsPanel() {
       flexGrow="1" 
       onSubmit={handleSubmit(onSubmit)}
       p={8}>
-      <Text fontWeight="semibold" fontSize="lg">{t("dashboard.vehicle-details")}</Text>
-      <FormControl mb={4}>
+      <Text mb={6} fontWeight="semibold" fontSize="lg">{t("dashboard.vehicle-details")}</Text>
+      <FormControl mb={4} isRequired>
         <FormLabel htmlFor='plate'>{t("field.vehicle-plate-number")}</FormLabel>
         <InputGroup>
           <Input 
@@ -127,38 +123,142 @@ function DetailsPanel() {
   )
 }
 
-function RoutesPanel() {
+function TravelPanel({data}) {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const [travel, setTravel] = useState();
+  const [submitting, setSubmitting] = useState(false);
+  const [updating, setUpdating] = useState(false);
+  const toast = useToast();
+  const { colorMode } = useColorMode();
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const onSubmit = (data) => {
+  useEffect(() => {
+    const fetch = async () => {
+      let { data, error } = await supabase
+        .from('travels')
+        .select()
+        .eq('driverId', user.id)
+        .eq('finished', false)
 
+      if (error)
+        throw error;
+
+      if (data.length > 0) {
+        setTravel(data[0]);
+      }
+    }
+
+    fetch().catch((e) => console.log(e) );
+  }, [user.id, t, toast]);
+
+  const onUpdate = async () => {
+    setUpdating(true);
+   
+    let { error } = await supabase.from('travels').update({
+      arrival: new Date().toISOString().toLocaleString('en-US'),
+      finished: true
+    });
+    setUpdating(false);
+    if (error) {
+      toast({
+        title: t("feedback.travel-update-error"),
+        status: "error",
+        isClosable: false,
+      })
+    } else {
+      setTravel(undefined);
+    }
+  }
+
+  const onSubmit = async (data) => {
+    setSubmitting(true);
+    const travel = {
+      departure: new Date().toISOString().toLocaleString("en-US"),
+      driverId: user.id,
+      ...data
+    }
+
+    let { error } = await supabase.from('travels').insert(travel);
+    setSubmitting(false);
+    if (error) {
+      toast({
+        title: t("feedback.travel-create-error"),
+        status: "error",
+        isClosable: true,
+      })
+    } else {
+      setTravel(travel);
+    }
   }
 
   return (
     <Flex 
       as="form" 
-      direction="column" 
+      direction="column"
       flexGrow="1" 
       p={8}
       onSubmit={handleSubmit(onSubmit)}>
-      <Text fontWeight="semibold" fontSize="lg">{t("dashboard.current-route")}</Text>
-      <FormControl mb={2}>
-        <FormLabel htmlFor='departure'>{t("field.departure")}</FormLabel>
+      <Text
+        fontWeight="semibold" 
+        fontSize="lg">
+        {t("dashboard.current-route")}
+      </Text>
+      <Text
+        mb={4}>
+        {t("info.about-routes")}
+      </Text>
+      { !data &&
+        <Flex
+          mb={6}
+          p={4}
+          color={colorMode === 'dark' ? "orange.300" : "orange.600"}
+          border="1px"
+          borderColor={colorMode === 'dark' ? "orange.300" : "orange.600"}
+          borderRadius="md">
+          <AlertOctagon/>
+          <Box as="span" ms={2}>
+            {t("info.missing-plate-number-no-travel")}
+          </Box>
+        </Flex>
+      }
+      <FormControl mb={2} isRequired>
+        <FormLabel htmlFor='source'>{t("field.source")}</FormLabel>
         <Input 
-          id='departure' 
+          id='source' 
           type='text'
-          {...register('departure')} />
-        <FormErrorMessage>{t(errors.departure && errors.departure.message)}.</FormErrorMessage>
+          isDisabled={travel}
+          placeholder={t("placeholder.source")}
+          defaultValue={travel && travel.source}
+          {...register('source')} />
+        <FormErrorMessage>{t(errors.source && errors.source.message)}.</FormErrorMessage>
       </FormControl>
-      <FormControl mb={2}>
+      <FormControl mb={8} isRequired>
         <FormLabel htmlFor='destination'>{t("field.destination")}</FormLabel>
         <Input 
           id='destination' 
           type='text'
+          isDisabled={travel}
+          placeholder={t("placeholder.destination")}
+          defaultValue={travel && travel.destination}
           {...register('destination')} />
         <FormErrorMessage>{t(errors.destination && errors.destination.message)}.</FormErrorMessage>
       </FormControl>
+      <Box display="flex" justifyContent="end" w="100%">
+      { travel
+        ? <Button
+            onClick={onUpdate}
+            isLoading={updating}>
+            {t("button.complete-travel")}
+          </Button>
+        : <Button
+            type="submit"
+            isDisabled={!data}
+            isLoading={submitting}>
+            {t("button.start-travel")}
+          </Button>
+      }
+      </Box>
     </Flex>
   )
 }
