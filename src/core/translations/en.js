@@ -64,6 +64,10 @@ const english = {
       "heading": "Ride safely and effortlessly",
       "subheading": "Nobody enjoys filling-up forms for every ride they take, we will do the heavy lifting for you, so you can be focused on being safe."
     },
+    "footer": {
+      "copyright": "Copyright 2021, TravelSafe Developers",
+      "other-destinations": "Other Destinations",
+    },
     "account": {
       "information": "Information",
       "security": "Security",
@@ -80,6 +84,8 @@ const english = {
       "missing-plate-number-no-travel": "You'll need to enter your vehicle's plate number first.",
     },
     "dialog": {
+      "scan": "Scan QR",
+      "select-date": "Select Birth Date",
       "send-password-reset-title": "Send Password Reset Email",
       "send-password-reset-subtitle": "To reset your password, we'll send a reset link to your registered email address: <focus>{{email}}</focus>",
     },

@@ -35,9 +35,9 @@ function Main() {
 
   const onDataCaptured = async (scanned) => {
     console.log(scanned);
-    const onShowError = () => {
+    const onShowError = (title) => {
       toast({
-        title: t("feedback.error-generic"),
+        title: t(title),
         status: "error",
         isClosable: true
       });
@@ -49,7 +49,7 @@ function Main() {
       .eq('driverId', scanned)
       .eq('finished', false)
       .single()
-    if (error) onShowError();
+    if (error) onShowError("feedback.error-no-routes");
 
     let { err } = await supabase.from('travels')
       .insert({
@@ -57,12 +57,13 @@ function Main() {
         userId: user.id
       });
     if (!err) {
+      setScan(false);
       toast({
         title: t("feedback.tracing-details-submitted"),
         status: "success",
         isClosable: true
-      })
-    } else onShowError() 
+      });
+    } else onShowError("feedback.error-generic") 
   }
 
   return (
