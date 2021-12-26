@@ -12,22 +12,14 @@ import {
   InputGroup,
   InputLeftAddon,
   InputRightElement,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverArrow,
-  PopoverCloseButton,
   Select,
-  Stack,
   useToast,
 } from "@chakra-ui/react";
-import { Calendar } from "@uselessdev/datepicker";
-import { Calendar as DateIcon, ChevronLeft, ChevronRight } from "react-feather";
+import { Calendar } from "react-feather";
 import { format } from "date-fns";
 import supabase from "../../core/Infrastructure";
 import { useAuth } from "../../auth/Provider";
+import DatePicker from "../../shared/custom/DatePicker";
 
 function InformationPanel() {
   const { t } = useTranslation();
@@ -112,49 +104,18 @@ function InformationPanel() {
       </FormControl>
       <FormControl mb={2}>
         <FormLabel htmlFor='birthdate'>{t("field.birthdate")}</FormLabel>
-        <Popover>
-          <PopoverTrigger>
-            <Stack>
-              <InputGroup>
-                <Input pr="2.5rem" value={format(date, "MMMM d yyyy")} readOnly/>
-                <InputRightElement width="2.5rem">
-                  <IconButton 
-                    size='sm' 
-                    variant='ghost'
-                    colorScheme="gray" 
-                    icon={<DateIcon/>}/>
-                </InputRightElement>
-              </InputGroup>
-            </Stack>
-          </PopoverTrigger>
-          <PopoverContent >
-            <PopoverArrow />
-            <PopoverCloseButton />
-            <PopoverHeader>{t("dialog.select-date")}</PopoverHeader>
-            <PopoverBody
-              paddingInlineStart={0}
-              paddingInlineEnd={0}>
-              <Calendar
-                value={date}
-                singleMonth
-                singleDateSelection
-                onSelectDate={setDate}
-                prevButton={props => (
-                  <IconButton 
-                    size="xs"
-                    icon={<ChevronLeft/>}
-                    {...props}/>
-                )}
-                nextButton={props => (
-                  <IconButton
-                    size="xs"
-                    icon={<ChevronRight/>}
-                    {...props}/>
-                )}/>
-            </PopoverBody>
-          </PopoverContent>
-        </Popover>
-        
+        <DatePicker date={date} setDate={setDate}>
+          <InputGroup>
+            <Input pr="2.5rem" value={format(date, "MMMM d yyyy")} readOnly/>
+            <InputRightElement width="2.5rem">
+              <IconButton 
+                size='sm' 
+                variant='ghost'
+                colorScheme="gray" 
+                icon={<Calendar size={16}/>}/>
+            </InputRightElement>
+          </InputGroup>
+        </DatePicker>
       </FormControl>
       <FormControl mb={2} isInvalid={errors.contact && errors.contact} isRequired>
         <FormLabel htmlFor='contact'>{t("field.contact")}</FormLabel>

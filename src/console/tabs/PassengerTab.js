@@ -6,6 +6,7 @@ import {
 import { getPagination } from "../../shared/Tools"; 
 
 function PassengerTab() {
+
   return (
     <Box></Box>
   );
