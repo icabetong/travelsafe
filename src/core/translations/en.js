@@ -20,6 +20,7 @@ const english = {
       "vehicle-plate-number": "Plate Number",
       "source": "Source",
       "destination": "Destination",
+      "name": "Name",
     },
     "placeholder": {
       "email": "example@gmail.com",
@@ -35,6 +36,7 @@ const english = {
       "save": "Save",
       "continue": "Continue",
       "cancel": "Cancel",
+      "refresh": "Refresh",
       "get-started": "Get Started",
       "switch-light": "Switch to Light",
       "switch-dark": "Switch to Dark",
@@ -78,6 +80,11 @@ const english = {
     "dashboard": {
       "vehicle-details": "Vehicle Details",
       "current-route": "Current Route",
+    },
+    "console": {
+      "passengers": "Passengers",
+      "drivers": "Drivers",
+      "routes": "Routes",
     },
     "info": {
       "about-routes": "Routes help us determine the passengers in case something bad happens.",

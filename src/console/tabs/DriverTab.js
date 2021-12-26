@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Box,
+  Button,
+  ButtonGroup,
+  IconButton,
+  Stack,
   Table,
   Thead,
   Tbody,
@@ -11,18 +15,25 @@ import {
   useToast,
   useDisclosure
 } from "@chakra-ui/react";
+import { Edit, RefreshCw } from "react-feather";
+import ReactPaginate from "react-paginate";
 import supabase from "../../core/Infrastructure";
 import PopoverBox from "../../shared/custom/PopoverBox";
+import PopoverSelect from "../../shared/custom/PopoverSelect";
+import DatePicker from "../../shared/custom/DatePicker";
 import { getPagination } from "../../shared/Tools"; 
 
 function DriverTab() {
   const { t } = useTranslation();
+  const [timestamp, setTimestamp] = useState(new Date());
   const [page, setPage] = useState(0);
   const [data, setData] = useState([]);
   const toast = useToast();
   const { nameFormOpen, onNameFormOpen, onNameFormClose } = useDisclosure();
   const { addressFormOpen, onAddressFormOpen, onAddressFormClose } = useDisclosure();
   const { contactFormOpen, onContactFormOpen, onContactFormClose } = useDisclosure();
+  const { genderFormOpen, onGenderFormOpen, onGenderFormClose } = useDisclosure();
+  const { dateFormOpen, onDateFormOpen, onDateFormClose } = useDisclosure();
   const { plateFormOpen, onPlateFormOpen, onPlateFormClose } = useDisclosure();
 
   useEffect(() => {
@@ -33,17 +44,18 @@ function DriverTab() {
         .select(`plateNumber, accounts (id, lastname, firstname, birthdate, gender, address, contact)`)
         .order('plateNumber', { ascending: true })
         .range(from, to)
-
+  
       setData(data);
     }
 
     fetch();
-  }, [page]);
+  }, [page, timestamp]);
 
   const onSubmit = async (data) => {
     const table = data.hasOwnProperty('plateNumber') ? 'vehicles' : 'accounts';
-
-    let { error } = await supabase.from(table).update(data);
+    const { id, ...row } = data;
+  
+    let { error } = await supabase.from(table).update(row).eq('id', id);
     if (error) {
       toast({
         title: t("feedback.data-update-error"),
@@ -60,7 +72,16 @@ function DriverTab() {
   }
 
   return (
-    <Box w="100%">
+    <Stack w="100%" direction='column'>
+      <ButtonGroup>
+        <Button
+          variant='outline'
+          size='sm'
+          leftIcon={<RefreshCw size={16}/>}
+          onClick={() => setTimestamp(new Date())}>
+          {t("button.refresh")}
+        </Button>
+      </ButtonGroup>
       { data &&
         <Table size="sm" variant="simple">
           <Thead>
@@ -79,6 +100,7 @@ function DriverTab() {
                   <Tr key={row.accounts.id}>
                     <Td>
                       <PopoverBox
+                        id={row.accounts.id}
                         open={nameFormOpen}
                         onOpen={onNameFormOpen}
                         onClose={onNameFormClose}
@@ -90,6 +112,7 @@ function DriverTab() {
                     </Td>
                     <Td>
                       <PopoverBox
+                        id={row.accounts.id}
                         open={addressFormOpen}
                         onOpen={onAddressFormOpen}
                         onClose={onAddressFormClose}
@@ -99,10 +122,36 @@ function DriverTab() {
                         {row.accounts.address}
                       </PopoverBox>
                     </Td>
-                    <Td>{t(`types.${row.accounts.gender}`)}</Td>
-                    <Td>{row.accounts.birthdate}</Td>
+                    <Td>
+                      <PopoverSelect
+                        id={row.accounts.id}
+                        open={genderFormOpen}
+                        onOpen={onGenderFormOpen}
+                        onClose={onGenderFormClose}
+                        onSubmit={onSubmit}
+                        field="gender"
+                        default={row.accounts.gender}
+                        options={['male', 'female']}>
+                        {t(`types.${row.accounts.gender}`)}
+                      </PopoverSelect>
+                    </Td>
+                    <Td>
+                      <Box as="span" mr="2">{row.accounts.birthdate}</Box>
+                      <DatePicker
+                        open={dateFormOpen}
+                        onOpen={onDateFormOpen}
+                        onClose={onDateFormClose}
+                        date={row.accounts.birthdate}
+                        setDate={(date) => onSubmit({birthdate: date, id: row.accounts.id})}>
+                        <IconButton
+                          variant="ghost"
+                          size="xs" 
+                          icon={<Edit size={16}/>}/>
+                      </DatePicker>
+                    </Td>
                     <Td>
                       <PopoverBox
+                        id={row.accounts.id}
                         open={contactFormOpen}
                         onOpen={onContactFormOpen}
                         onClose={onContactFormClose}
@@ -114,6 +163,7 @@ function DriverTab() {
                     </Td>
                     <Td>
                       <PopoverBox
+                        id={row.accounts.id}
                         open={plateFormOpen}
                         onOpen={onPlateFormOpen}
                         onClose={onPlateFormClose}
@@ -130,7 +180,7 @@ function DriverTab() {
           </Tbody>
         </Table>
       }
-    </Box>
+    </Stack>
   );
 }
 
