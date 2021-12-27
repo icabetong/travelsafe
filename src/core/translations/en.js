@@ -21,6 +21,12 @@ const english = {
       "source": "Source",
       "destination": "Destination",
       "name": "Name",
+      "driver-name": "Driver Name",
+      "departure": "Departure",
+      "arrival": "Arrival",
+      "inactive-routes": "Show Inactive Routes",
+      "with-source": "With Source",
+      "with-destination": "With Destination"
     },
     "placeholder": {
       "email": "example@gmail.com",
@@ -94,6 +100,7 @@ const english = {
     },
     "dialog": {
       "scan": "Scan QR",
+      "filter": "Filter",
       "select-date": "Select Birth Date",
       "send-password-reset-title": "Send Password Reset Email",
       "send-password-reset-subtitle": "To reset your password, we'll send a reset link to your registered email address: <focus>{{email}}</focus>",

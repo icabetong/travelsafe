@@ -199,14 +199,17 @@ function RoutesPanel({data}) {
     const travel = {
       departure: new Date().toISOString().toLocaleString("en-US"),
       driverId: user.id,
+      finished: false,
       ...data
     }
+    console.log(travel)
 
     let { error } = await supabase.from('routes').insert(travel);
     setSubmitting(false);
     if (error) {
       toast({
         title: t("feedback.travel-create-error"),
+        description: error,
         status: "error",
         isClosable: true,
       })
