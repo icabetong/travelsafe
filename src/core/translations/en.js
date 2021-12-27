@@ -87,6 +87,8 @@ const english = {
       "routes": "Routes",
     },
     "info": {
+      "your-qr-code": "Your QR-Code",
+      "qr-code-save": "You can right-click on the qr-code to save it as an image.",
       "about-routes": "Routes help us determine the passengers in case something bad happens.",
       "missing-plate-number-no-travel": "You'll need to enter your vehicle's plate number first.",
     },
