@@ -15,6 +15,7 @@ import {
   useToast,
   useColorMode,
 } from "@chakra-ui/react";
+import QRCode from "qrcode.react";
 import { AlertOctagon } from "react-feather";
 import { useAuth } from "../auth/Provider";
 import Page from "../shared/custom/Page";
@@ -72,53 +73,75 @@ function Dashboard() {
     <Page title={t("navigation.dashboard")}>
       <Flex 
         w="100%"
-        h="80vh"
+        minH="80vh"
         mt={12}
         direction={{base: "column-reverse", md: "row"}}>
-        <DetailsPanel onSubmit={onSubmit} data={data} updating={updating}/>
+        <DetailsPanel id={user.id} onSubmit={onSubmit} data={data} updating={updating}/>
         <RoutesPanel data={data}/>
       </Flex>
     </Page>
   );
 }
 
-function DetailsPanel({onSubmit, data, updating}) {
+function DetailsPanel({id, onSubmit, data, updating}) {
   const { t } = useTranslation();
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   return (
     <Flex 
-      as="form" 
-      direction="column" 
+      direction="column"
       align="start" 
-      justify="start" 
-      flexGrow="1" 
-      onSubmit={handleSubmit(onSubmit)}
-      p={8}>
-      <Text mb={6} fontWeight="semibold" fontSize="lg">{t("dashboard.vehicle-details")}</Text>
-      <FormControl mb={4} isRequired>
-        <FormLabel htmlFor='plate'>{t("field.vehicle-plate-number")}</FormLabel>
-        <InputGroup>
-          <Input 
-            id='plate' 
-            type='text'
-            pr='4.5rem'
-            defaultValue={data && data.plateNumber}
-            {...register("plate")}/>
-          <InputRightElement
-            width="4.5rem">
-            <Button 
-              colorScheme="gray" 
-              h='1.75rem' 
-              size='sm' 
-              type="submit"
-              isLoading={updating}>
-              {t("button.save")}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-        <FormErrorMessage>{t(errors.plate && errors.plate.message)}</FormErrorMessage>
-      </FormControl>
+      justify="start"
+      flexGrow="1">
+      <Flex 
+        w="100%"
+        as="form" 
+        direction="column"
+        onSubmit={handleSubmit(onSubmit)}
+        p={8}>
+        <Text mb={6} fontWeight="semibold" fontSize="lg">{t("dashboard.vehicle-details")}</Text>
+        <FormControl mb={4} isRequired>
+          <FormLabel htmlFor='plate'>{t("field.vehicle-plate-number")}</FormLabel>
+          <InputGroup>
+            <Input 
+              id='plate' 
+              type='text'
+              pr='4.5rem'
+              defaultValue={data && data.plateNumber}
+              {...register("plate")}/>
+            <InputRightElement
+              width="4.5rem">
+              <Button 
+                colorScheme="gray" 
+                h='1.75rem' 
+                size='sm' 
+                type="submit"
+                isLoading={updating}>
+                {t("button.save")}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+          <FormErrorMessage>{t(errors.plate && errors.plate.message)}</FormErrorMessage>
+        </FormControl>
+      </Flex>
+      <Flex
+        w="100%"
+        direction="column"
+        padding={8}>
+        <Text mb={6} fontWeight="semibold" fontSize="lg">{t("info.your-qr-code")}</Text>
+        <Flex align="center" justify="center">
+          <Box
+            as={QRCode}
+            value={id}
+            size={256}
+            width={{base: "xs", md: "md"}}
+            height={{base: "xs", md: "md"}}
+            p={4}
+            border="1px"
+            borderRadius="md"
+            borderColor="gray.500"/>
+        </Flex>
+      </Flex>
     </Flex>
   )
 }

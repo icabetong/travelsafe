@@ -1,4 +1,3 @@
-
 import { useTranslation } from "react-i18next";
 import {
   IconButton,
@@ -9,7 +8,6 @@ import {
   PopoverBody,
   PopoverArrow,
   PopoverCloseButton,
-  Stack,
 } from "@chakra-ui/react";
 import { ChevronLeft, ChevronRight } from "react-feather";
 import { Calendar } from "@uselessdev/datepicker";
@@ -20,9 +18,7 @@ function DatePicker(props) {
   return (
     <Popover>
       <PopoverTrigger>
-        <Stack>
-          {props.children}
-        </Stack>
+        {props.children}
       </PopoverTrigger>
       <PopoverContent >
         <PopoverArrow />

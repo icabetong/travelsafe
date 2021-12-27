@@ -42,7 +42,7 @@ function PopoverBox(props) {
 
     const onFormSubmit = async (data) => {
       setSubmitting(true);
-      await onSubmit(data);
+      await onSubmit({...data, id: props.id});
       setSubmitting(false);
     }
 

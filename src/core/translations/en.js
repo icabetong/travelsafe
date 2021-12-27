@@ -20,6 +20,7 @@ const english = {
       "vehicle-plate-number": "Plate Number",
       "source": "Source",
       "destination": "Destination",
+      "name": "Name",
     },
     "placeholder": {
       "email": "example@gmail.com",
@@ -35,6 +36,7 @@ const english = {
       "save": "Save",
       "continue": "Continue",
       "cancel": "Cancel",
+      "refresh": "Refresh",
       "get-started": "Get Started",
       "switch-light": "Switch to Light",
       "switch-dark": "Switch to Dark",
@@ -79,7 +81,14 @@ const english = {
       "vehicle-details": "Vehicle Details",
       "current-route": "Current Route",
     },
+    "console": {
+      "passengers": "Passengers",
+      "drivers": "Drivers",
+      "routes": "Routes",
+    },
     "info": {
+      "your-qr-code": "Your QR-Code",
+      "qr-code-save": "You can right-click on the qr-code to save it as an image.",
       "about-routes": "Routes help us determine the passengers in case something bad happens.",
       "missing-plate-number-no-travel": "You'll need to enter your vehicle's plate number first.",
     },

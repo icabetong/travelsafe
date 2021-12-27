@@ -69,6 +69,7 @@ function Main() {
   return (
     <Page title={profile && t("concat.welcome", {name: profile.firstname})} includeFooter>
       <Flex
+        w="100%"
         direction={{base: "column", md: "row-reverse"}}
         align="center"
         justifyContent="space-around">

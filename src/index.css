@@ -11,3 +11,32 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.react-paginate {
+  display: inline-block;
+  margin-top: var(--chakra-space-8);
+  margin-bottom: var(--chakra-space-12);
+}
+.selected {
+  color: var(--chakra-colors-blue-500);
+}
+.page {
+  margin: inherit var(--chakra-space-2);
+  display: inline-block;
+}
+.page-link {
+  color: var(--chakra-colors-gray-400);
+  min-width: var(--chakra-space-6);
+  min-height: var(--chakra-space-6);
+  border: 1px solid transparent;
+  border-radius: var(--chakra-space-2);
+  padding-left: var(--chakra-space-4);
+  padding-right: var(--chakra-space-4);
+  padding-top: var(--chakra-space-2);
+  padding-bottom: var(--chakra-space-2);
+}
+.page-link:hover {
+  color: white;
+  border: 1px solid var(--chakra-colors-blue-500);
+}
