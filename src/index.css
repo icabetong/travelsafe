@@ -14,7 +14,9 @@ code {
 
 
 .react-paginate {
-  display: inline-block;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--chakra-space-4);
   margin-top: var(--chakra-space-8);
   margin-bottom: var(--chakra-space-12);
 }
@@ -22,7 +24,7 @@ code {
   color: var(--chakra-colors-blue-500);
 }
 .page {
-  margin: inherit var(--chakra-space-2);
+  margin: inherit var(--chakra-space-8);
   display: inline-block;
 }
 .page-link {

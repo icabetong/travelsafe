@@ -88,10 +88,12 @@ function PassengerTab() {
           </Stack>
       }
       <Spacer/>
-      <Paginate
-        onPageChange={onPageChanged}
-        pageCount={data.count}
-        currentPage={page}/>
+      { data && data.row.length > 0
+        && <Paginate
+              onPageChange={onPageChanged}
+              pageCount={data.count}
+              currentPage={page}/>
+      }
     </Flex>
   );
 }

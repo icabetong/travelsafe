@@ -52,7 +52,8 @@ const english = {
       "scan-qr-code": "Scan QR Code",
       "start-travel": "Start Travel",
       "complete-travel": "Complete Travel",
-      "update-account-information": "Update Account Information"
+      "update-account-information": "Update Account Information",
+      "filter": "Filter"
     },
     "types": {
       "male": "Male",
