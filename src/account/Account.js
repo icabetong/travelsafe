@@ -11,9 +11,9 @@ import {
 } from "@chakra-ui/react";
 import Page from "../shared/custom/Page";
 
-const InformationPanel = lazy(() => import('./panels/Information'));
-const SecurityPanel = lazy(() => import('./panels/Security'));
-const TravelsPanel = lazy(() => import('./panels/Travels'));
+const InformationTab = lazy(() => import('./tabs/Information'));
+const SecurityTab = lazy(() => import('./tabs/Security'));
+const TravelsTab = lazy(() => import('./tabs/Travels'));
 
 function Account() {
   const { t } = useTranslation();
@@ -37,17 +37,17 @@ function Account() {
           <TabPanels>
             <TabPanel>
               <Suspense fallback={fallback}>
-                <InformationPanel/>
+                <InformationTab/>
               </Suspense>
             </TabPanel>
             <TabPanel>
               <Suspense fallback={fallback}>
-                <SecurityPanel/>
+                <SecurityTab/>
               </Suspense>
             </TabPanel>
             <TabPanel>
               <Suspense fallback={fallback}>
-                <TravelsPanel/>
+                <TravelsTab/>
               </Suspense>
             </TabPanel>
           </TabPanels>

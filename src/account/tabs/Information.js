@@ -21,7 +21,7 @@ import supabase from "../../core/Infrastructure";
 import { useAuth } from "../../auth/Provider";
 import DatePicker from "../../shared/custom/DatePicker";
 
-function InformationPanel() {
+function InformationTab() {
   const { t } = useTranslation();
   const toast = useToast();
   const { user, profile } = useAuth();
@@ -150,4 +150,4 @@ function InformationPanel() {
     </Flex>
   )
 }
-export default InformationPanel;
+export default InformationTab;

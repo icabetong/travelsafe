@@ -17,7 +17,7 @@ import {
 import { useAuth } from "../../auth/Provider";
 import supabase from "../../core/Infrastructure";
 
-function SecurityPanel() {
+function SecurityTab() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const toast = useToast();
@@ -91,4 +91,4 @@ function SecurityPanel() {
     
   )
 }
-export default SecurityPanel;
+export default SecurityTab;

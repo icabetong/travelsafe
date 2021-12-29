@@ -108,7 +108,9 @@ const english = {
     },
     "concat": {
       "welcome": "Welcome, {{name}}",
-      "or": "or"
+      "or": "or",
+      "departure": "Departed: {{departure}}",
+      "arrival": "Arrived: {{arrival}}"
     }
   }
 }
