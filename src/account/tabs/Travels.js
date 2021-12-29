@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 import {
   Box,
   Flex,
-  List,
-  ListItem,
+  SimpleGrid,
+  useColorMode,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { useAuth } from "../../auth/Provider";
@@ -43,27 +44,45 @@ function TravelsTab() {
 export default TravelsTab;
 
 function TravelList({data}) {
-  const { t } = useTranslation();
   const pattern = "hh:mm a - MMMM d yyyy";
+  const columns = useBreakpointValue({ base: 1, md: 3 });
+  const { colorMode } = useColorMode();
 
   return (
-    <List>
+    <SimpleGrid columns={columns} spacing={4}>
     { data.map((travel) => {
         return (
-          <ListItem key={travel.travelId}>
+          <Box 
+            key={travel.travelId}
+            p={4}
+            border="1px"
+            borderColor={colorMode === 'dark' ? 'gray.500' : 'gray.300'}
+            borderRadius="md">
             <Box fontSize="lg" fontWeight="bold">
               {`${travel.routes.source} - ${travel.routes.destination}`}
             </Box>
             <Box fontSize="sm">
-              {t("concat.departure", { departure: format(Date.parse(travel.routes.departure), pattern)})}
+              <Trans
+                i18nKey="concat.departure"
+                values={{ departure: format(Date.parse(travel.routes.departure), pattern) }}
+                components={{
+                  focus: <Box fontWeight="semibold"/>
+                }}/>
             </Box>
-            <Box fontSize="sm">
-              {t("concat.arrival", { arrival: format(Date.parse(travel.routes.arrival), pattern)})}
-            </Box>
-          </ListItem>
+            { travel.routes.arrival
+              &&  <Box fontSize="sm">
+                    <Trans
+                      i18nKey="concat.arrival"
+                      values={{ arrival: format(Date.parse(travel.routes.arrival), pattern) }}
+                      components={{
+                        focus: <Box fontWeight="semibold"/>
+                      }}/>
+                  </Box>
+            }
+          </Box>
         );
       })
     }
-    </List>
+    </SimpleGrid>
   )
 }
