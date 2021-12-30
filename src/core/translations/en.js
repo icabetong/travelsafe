@@ -53,7 +53,8 @@ const english = {
       "start-travel": "Start Travel",
       "complete-travel": "Complete Travel",
       "update-account-information": "Update Account Information",
-      "filter": "Filter"
+      "filter": "Filter",
+      "close": "Close",
     },
     "types": {
       "male": "Male",
@@ -102,6 +103,7 @@ const english = {
     "dialog": {
       "scan": "Scan QR",
       "filter": "Filter",
+      "travel-details": "Travel Details",
       "select-date": "Select Birth Date",
       "send-password-reset-title": "Send Password Reset Email",
       "send-password-reset-subtitle": "To reset your password, we'll send a reset link to your registered email address: <focus>{{email}}</focus>",
@@ -109,8 +111,6 @@ const english = {
     "concat": {
       "welcome": "Welcome, {{name}}",
       "or": "or",
-      "departure": "Departed: <focus>{{departure}}</focus>",
-      "arrival": "Arrived: <focus>{{arrival}}</focus>"
     }
   }
 }
