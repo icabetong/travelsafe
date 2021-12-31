@@ -27,7 +27,8 @@ const english = {
       "arrival": "Arrival",
       "inactive-routes": "Show Inactive Routes",
       "with-source": "With Source",
-      "with-destination": "With Destination"
+      "with-destination": "With Destination",
+      "status": "Status"
     },
     "placeholder": {
       "email": "example@gmail.com",
@@ -57,12 +58,16 @@ const english = {
       "update-account-information": "Update Account Information",
       "filter": "Filter",
       "close": "Close",
+      "verify": "Verify"
     },
     "types": {
       "male": "Male",
       "female": "Female",
       "passenger": "Passenger",
       "driver": "Driver",
+      "unverified": "Unverified",
+      "submitted": "Submitted",
+      "verified": "Verified"
     },
     "auth": {
       "sign-in": "Sign-in with your account",
