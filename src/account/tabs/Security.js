@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Trans, useTranslation } from "react-i18next";
 import {
   Box,
@@ -12,7 +13,6 @@ import {
   ModalBody,
   ModalCloseButton,
   useToast,
-  useColorMode,
 } from "@chakra-ui/react";
 import { useAuth } from "../../auth/Provider";
 import supabase from "../../core/Infrastructure";
@@ -21,11 +21,11 @@ function SecurityTab() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const toast = useToast();
-  const { colorMode } = useColorMode();
   const [open, setOpen] = useState(false);
   const [sending, setSending] = useState(false);
   const onOpen = () => setOpen(true);
   const onClose = () => setOpen(false);
+  const navigate = useNavigate();
 
   const onSendPasswordReset = async () => {
     setSending(true);
@@ -51,12 +51,16 @@ function SecurityTab() {
     <Flex
       direction="column"
       align="start">
-      <Box fontSize="lg" fontWeight="medium">{t("account.password-reset")}</Box>
-      <Box mb={4} color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}>{t("account.password-reset-subtitle")}</Box>
-      <Button 
-        onClick={onOpen}>
-          {t("button.get-started")}
-      </Button>
+      <SecurityItem
+        title="account.password-reset"
+        subtitle="account.password-reset-subtitle"
+        buttonText="button.get-started"
+        onClick={onOpen}/>
+      <SecurityItem
+        title="account.verification-status"
+        subtitle="account.veriification-status-subtitle"
+        buttonText="button.get-verified"
+        onClick={() => navigate("/verify")}/>
       { open &&
         <Modal isOpen={open} onClose={onClose} closeOnOverlayClick={!sending}>
           <ModalOverlay />
@@ -92,3 +96,21 @@ function SecurityTab() {
   )
 }
 export default SecurityTab;
+
+function SecurityItem(props) {
+  const { t } = useTranslation();
+
+  return (
+    <Box mt={2} mb={4}>
+    <Box fontSize="lg" fontWeight="semibold">{t(props.title)}</Box>
+      <Box mb={4} fontSize="sm" color='gray.400'>{t(props.subtitle)}</Box>
+      { props.buttonText && props.onClick
+        &&  <Button 
+              size='sm'
+              onClick={props.onClick}>
+                {t(props.buttonText)}
+            </Button>
+      }
+    </Box>
+  )
+}

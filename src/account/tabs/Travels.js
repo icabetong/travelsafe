@@ -123,7 +123,7 @@ function TravelsTab() {
 export default TravelsTab;
 
 function TravelList({data, onClick}) {
-  const columns = useBreakpointValue({ base: 1, md: 3 });
+  const columns = useBreakpointValue({ base: 1, md: 3, lg: 4 });
   const { colorMode } = useColorMode();
 
   return (
@@ -135,13 +135,13 @@ function TravelList({data, onClick}) {
             height="fit-content"
             key={travel.travelId}
             p={4}
-            color={colorMode === 'dark' ? 'gray.400' : 'gray.500'}
+            color='gray.400'
             onClick={() => onClick(travel)}>
             <Stack direction="column" justify="start">
               <Box fontSize="lg" fontWeight="bold" color={colorMode === 'dark' ? 'white' : 'gray.900'}>
                 {`${travel.routes.source} - ${travel.routes.destination}`}
               </Box>
-              <Box fontSize="sm">
+              <Box fontSize="sm" fontWeight="normal">
                 { formatRelative(Date.parse(travel.routes.departure), new Date()) }
               </Box>
             </Stack>

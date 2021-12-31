@@ -6,19 +6,28 @@ const AuthContext = React.createContext();
 export function AuthProvider({children}) {
   const [user, setUser] = useState();
   const [profile, setProfile] = useState();
-  const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState('fetching');
 
   useEffect(() => {
     const init = async () => {
       const user = supabase.auth.user();
 
       setUser(user ?? null);
-      setLoading(false);
+     
 
-      const { data: result } = await supabase
-        .from('accounts').select().eq('id', user.id);
-      if (result && result.length > 0) {
-        setProfile(result[0]);
+      if (user) {
+        const { data: result } = await supabase
+          .from('accounts')
+          .select()
+          .eq('id', user.id)
+          .single();
+        
+        if (result) {
+          setProfile(result);
+          setStatus('authenticated');
+        } else {
+          setStatus('empty');
+        }
       }
     }
     
@@ -40,11 +49,12 @@ export function AuthProvider({children}) {
     signOut: () => supabase.auth.signOut(),
     user,
     profile,
+    status
   }
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {(status !== 'empty' || status !== 'fetching') && children}
     </AuthContext.Provider>
   )
 }

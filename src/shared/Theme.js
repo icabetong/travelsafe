@@ -1,7 +1,7 @@
 import { extendTheme, withDefaultColorScheme } from "@chakra-ui/react";
 import { CalendarDefaultTheme } from "@uselessdev/datepicker";
 
-const font = 'Source Sans Pro';
+const font = 'Fira Sans';
 const config = {
   initialColorMode: 'light',
   useSystemColorMode: true,

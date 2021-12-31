@@ -3,11 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@chakra-ui/icons": "^1.1.1",
     "@chakra-ui/react": "^1.7.3",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
-    "@fontsource/source-sans-pro": "^4.5.1",
+    "@fontsource/fira-sans": "^4.5.0",
     "@supabase/supabase-js": "^1.28.6",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^11.2.7",

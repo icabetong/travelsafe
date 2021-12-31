@@ -33,6 +33,7 @@ function DriverTab() {
   const toast = useToast();
 
   useEffect(() => {
+    let unmounted = false;
     const fetch = async () => {
       const { from, to } = getPagination(page);
       const { data, count } = await supabase
@@ -42,10 +43,15 @@ function DriverTab() {
         .eq('accounts.type', 'driver')
         .range(from, to)
   
-      setData({ row: data, count: count });
+      if (!unmounted) {
+        setData({ row: data, count: count });
+      }
     }
 
     fetch();
+    return () => {
+      unmounted = true;
+    }
   }, [page, timestamp]);
 
   const onPageChanged = (page) => {

@@ -26,7 +26,7 @@ function Account() {
 
   return (
     <Page title={t("navigation.account")}>
-      <Box w="100%" minH="80vh" mt={4} px={{base: 4, md: 8}}>
+      <Box w="100%" minH="80vh" px={{base: 4, md: 8}}>
         <Tabs h="100%">
           <TabList>
             <Tab>{t("account.information")}</Tab>

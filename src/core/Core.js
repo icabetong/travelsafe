@@ -11,6 +11,7 @@ import SignIn from "../auth/SignIn";
 import SignUp from "../auth/SignUp";
 import theme from "../shared/Theme";
 import ConditionalRoute from "../shared/custom/ConditionalRoute";
+import Verification from "../auth/Verification";
 
 function Core() {
   const { user } = useAuth();
@@ -59,6 +60,14 @@ function Core() {
                 <Console/>
               </ConditionalRoute>
           }/>
+          <Route
+            path="/verify"
+            element={
+              <ConditionalRoute
+                to="/signin">
+                <Verification/>
+              </ConditionalRoute>
+            }/>
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

@@ -26,7 +26,7 @@ const Page = (props) => {
             {title}
           </Box>
         }
-        <Center flexGrow="3" w="100%">
+        <Center flexGrow="3" w="100%" h="100%">
           {children}
         </Center>
       </Flex>

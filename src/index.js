@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import '@fontsource/source-sans-pro';
+import '@fontsource/fira-sans';
 import './index.css';
 import './localization';
 import { AuthProvider } from "./auth/Provider";
