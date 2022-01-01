@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
   Box,
@@ -6,6 +7,8 @@ import {
   ButtonGroup,
   Center,
   Flex,
+  FormControl,
+  FormLabel,
   IconButton,
   Image,
   Modal,
@@ -15,6 +18,8 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Radio,
+  RadioGroup,
   Spacer,
   Spinner,
   Stack,
@@ -28,12 +33,13 @@ import {
   useToast,
   useDisclosure
 } from "@chakra-ui/react";
-import { Edit, RefreshCw, MoreVertical } from "react-feather";
+import { Edit, RefreshCw, MoreVertical, Filter } from "react-feather";
 import supabase from "../../core/Infrastructure";
 import PopoverBox from "../../shared/custom/PopoverBox";
 import PopoverSelect from "../../shared/custom/PopoverSelect";
 import DatePicker from "../../shared/custom/DatePicker";
 import Paginate from "../../shared/custom/Pagination";
+import PopoverForm from "../../shared/custom/PopoverForm";
 import { getPagination } from "../../shared/Tools"; 
 
 function DriverTab() {
@@ -44,9 +50,11 @@ function DriverTab() {
   const [verification, setVerification] = useState();
   const [downloading, setDownloading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [filters, setFilters] = useState({ status: 'all' });
   const [image, setImage] = useState();
   const toast = useToast();
   const showList = useBreakpointValue({base: true, md: false});
+  const { register, handleSubmit } = useForm();
 
   const onVerificationInvoke = (user) => setVerification(user);
   const onVerificationDispose = () => setVerification(undefined);
@@ -58,7 +66,7 @@ function DriverTab() {
         setDownloading(true);
         const { data } = await supabase.storage
           .from('verification-ids')
-          .download(`${verification.accounts.id}.png`);
+          .download(`${verification.id}.png`);
 
         if (!unmounted) {
           setDownloading(false);
@@ -86,12 +94,19 @@ function DriverTab() {
     let unmounted = false;
     const fetch = async () => {
       const { from, to } = getPagination(page);
-      const { data, count } = await supabase
-        .from('vehicles')
-        .select(`plateNumber, accounts(id, lastname, firstname, birthdate, gender, address, contact, status)`, { count: "exact" })
-        .order('plateNumber', { ascending: true })
-        .eq('accounts.type', 'driver')
-        .range(from, to)
+      let query = supabase
+        .from('drivers')
+        .select()
+        .order('lastname', { ascending: true })
+        .range(from, to);
+
+      if (filters.status !== 'all') {
+        console.log(filters.status)
+        query = query.eq('status', filters.status);
+      }
+
+      const { data, count } = await query;
+      console.log(data)
 
       if (!unmounted) {
         setData({ row: data, count: count });
@@ -102,7 +117,7 @@ function DriverTab() {
     return () => {
       unmounted = true;
     }
-  }, [page, timestamp]);
+  }, [page, timestamp, filters]);
 
   const onPageChanged = (page) => {
     setPage(page.selected);
@@ -125,7 +140,7 @@ function DriverTab() {
     let { error } = await supabase 
       .from('accounts')
       .update({ status: 'verified' })
-      .eq('id', verification.accounts.id)
+      .eq('id', verification.id)
 
     setSubmitting(false);
     if (!error) {
@@ -169,14 +184,53 @@ function DriverTab() {
             onClick={() => setTimestamp(new Date())}>
             {t("button.refresh")}
           </Button>
+          <PopoverForm
+            header={
+              <Box>{t("dialog.filter")}</Box>
+            }
+            trigger={
+              <Button
+                variant="outline"
+                size="sm"
+                leftIcon={<Filter size={16}/>}>
+                {t("button.filter")}
+              </Button>}>
+            <Stack 
+              as='form' 
+              direction='column'
+              align='center'
+              onSubmit={handleSubmit(setFilters)}>
+              <FormControl as='fieldset'>
+                <FormLabel as='legend'>
+                  {t("field.status")}
+                </FormLabel>
+                <RadioGroup defaultValue='all' name='status'>
+                  <Stack direction='column'>
+                    <Radio {...register('status')} value='all'>{t("types.all")}</Radio>
+                    <Radio {...register('status')} value='unverified'>{t("types.unverified")}</Radio>
+                    <Radio {...register('status')} value='submitted'>{t("types.submitted")}</Radio>
+                    <Radio {...register('status')} value='verified'>{t("types.verified")}</Radio>
+                  </Stack>
+                </RadioGroup>
+              </FormControl>
+              <Button
+                mt={2}
+                size='sm'
+                type='submit'>
+                {t("button.filter")}
+              </Button>
+            </Stack>
+          </PopoverForm>
         </ButtonGroup>
         { data && data.row.length > 0
           ? showList
             ? <DriversList data={data}/>
             : <DriverTable data={data} onSubmit={onSubmit} onVerify={onVerificationInvoke}/>
-          : <Stack direction="column" align="center">
-              <Box>{t("feedback.empty-drivers")}</Box>
-            </Stack>
+          : <Box w='100%'>
+              <Center h='100%'>
+                <Box>{t('feedback.empty-drivers')}</Box>
+              </Center>
+            </Box>
         }
         <Spacer/>
         <Paginate
@@ -246,52 +300,52 @@ function DriverTable({data, onSubmit, onVerify}) {
         <Tbody>
           { data.row.map((row) => {
               return (
-                <Tr key={row.accounts.id}>
+                <Tr key={row.id}>
                   <Td>
                     <PopoverBox
-                      id={row.accounts.id}
+                      id={row.id}
                       open={nameFormOpen}
                       onOpen={onNameFormOpen}
                       onClose={onNameFormClose}
                       onSubmit={onSubmit}
                       fields={['lastname', 'firstname']}
-                      values={{lastname: row.accounts.lastname, firstname: row.accounts.firstname}}>
-                      {`${row.accounts.firstname} ${row.accounts.lastname}`}
+                      values={{lastname: row.lastname, firstname: row.firstname}}>
+                      {`${row.firstname} ${row.lastname}`}
                     </PopoverBox>
                   </Td>
                   <Td>
                     <PopoverBox
-                      id={row.accounts.id}
+                      id={row.id}
                       open={addressFormOpen}
                       onOpen={onAddressFormOpen}
                       onClose={onAddressFormClose}
                       onSubmit={onSubmit}
                       fields={['address']}
-                      values={{address: row.accounts.address}}>
-                      {row.accounts.address}
+                      values={{address: row.address}}>
+                      {row.address}
                     </PopoverBox>
                   </Td>
                   <Td>
                     <PopoverSelect
-                      id={row.accounts.id}
+                      id={row.id}
                       open={genderFormOpen}
                       onOpen={onGenderFormOpen}
                       onClose={onGenderFormClose}
                       onSubmit={onSubmit}
                       field="gender"
-                      default={row.accounts.gender}
+                      default={row.gender}
                       options={['male', 'female']}>
-                      {t(`types.${row.accounts.gender}`)}
+                      {t(`types.${row.gender}`)}
                     </PopoverSelect>
                   </Td>
                   <Td>
-                    <Box as="span" mr="2">{row.accounts.birthdate}</Box>
+                    <Box as="span" mr="2">{row.birthdate}</Box>
                     <DatePicker
                       open={dateFormOpen}
                       onOpen={onDateFormOpen}
                       onClose={onDateFormClose}
-                      date={row.accounts.birthdate}
-                      setDate={(date) => onSubmit({birthdate: date, id: row.accounts.id})}>
+                      date={row.birthdate}
+                      setDate={(date) => onSubmit({birthdate: date, id: row.id})}>
                       <IconButton
                         variant="ghost"
                         size="xs" 
@@ -300,20 +354,20 @@ function DriverTable({data, onSubmit, onVerify}) {
                   </Td>
                   <Td>
                     <PopoverBox
-                      id={row.accounts.id}
+                      id={row.id}
                       open={contactFormOpen}
                       onOpen={onContactFormOpen}
                       onClose={onContactFormClose}
                       onSubmit={onSubmit}
                       fields={['contact']}
-                      values={{contact: row.accounts.contact}}>
-                      {row.accounts.contact}
+                      values={{contact: row.contact}}>
+                      {row.contact}
                     </PopoverBox>
                   </Td>
                   <Td>
                     <Box>
-                      <Box as='span' mr={2}>{t(`types.${row.accounts.status}`)}</Box>
-                      { row.accounts.status === 'submitted' &&
+                      <Box as='span' mr={2}>{t(`types.${row.status}`)}</Box>
+                      { row.status === 'submitted' &&
                         <IconButton 
                           variant='ghost' 
                           size='xs' 
@@ -324,7 +378,7 @@ function DriverTable({data, onSubmit, onVerify}) {
                   </Td>
                   <Td>
                     <PopoverBox
-                      id={row.accounts.id}
+                      id={row.id}
                       open={plateFormOpen}
                       onOpen={onPlateFormOpen}
                       onClose={onPlateFormClose}
@@ -363,10 +417,10 @@ function DriverListItem({driver}) {
   return (
     <Stack direction='column' spacing={0} py={4}>
       <Box fontWeight='semibold'>
-        {`${driver.accounts.firstname} ${driver.accounts.lastname}`}
+        {`${driver.firstname} ${driver.lastname}`}
       </Box>
       <Box fontSize='sm' color='gray.500'>
-        {driver.accounts.contact}
+        {driver.plateNumber}
       </Box>
     </Stack>
   )

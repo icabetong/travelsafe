@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Box,
+  Center,
   Spinner,
   Tabs, 
   TabList, 
@@ -18,8 +19,12 @@ const RoutesTab = lazy(() => import('./tabs/RoutesTab'));
 function Console() {
   const { t } = useTranslation();
 
-  const fallback = (
-    <Box><Spinner/></Box>
+  const loading = (
+    <Box w='100%'>
+      <Center h='100%'>
+        <Spinner/>
+      </Center>
+    </Box>
   )
 
   return (
@@ -34,17 +39,17 @@ function Console() {
 
           <TabPanels display="flex" minH="75vh">
             <TabPanel display="flex" flexGrow="1">
-              <Suspense fallback={fallback}>
+              <Suspense fallback={loading}>
                 <PassengerTab/>
               </Suspense>
             </TabPanel>
             <TabPanel display="flex" flexGrow="1">
-              <Suspense fallback={fallback}>
+              <Suspense fallback={loading}>
                 <DriverTab/>
               </Suspense>
             </TabPanel>
             <TabPanel display="flex" flexGrow="1">
-              <Suspense fallback={fallback}>
+              <Suspense fallback={loading}>
                 <RoutesTab/>
               </Suspense>
             </TabPanel>

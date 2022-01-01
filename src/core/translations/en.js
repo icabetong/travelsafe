@@ -70,7 +70,8 @@ const english = {
       "driver": "Driver",
       "unverified": "Unverified",
       "submitted": "Submitted",
-      "verified": "Verified"
+      "verified": "Verified",
+      "all": "All",
     },
     "auth": {
       "sign-in": "Sign-in with your account",
@@ -125,6 +126,9 @@ const english = {
       "or": "or",
     },
     "feedback": {
+      "empty-passengers": "There are no passengers registered",
+      "empty-drivers": "There are no drivers registered",
+      "empty-routes": "There are no routes conducted",
       "under-verification": "Your account is under verification",
       "under-verification-subtitle": "For legal and public safety purposes, we'll check if your submitted ID is valid and will proceed to activate your account."
     }

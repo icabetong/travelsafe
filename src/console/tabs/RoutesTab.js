@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import {
   Box,
   Button,
+  Center,
   Flex,
   FormControl,
   FormLabel,
@@ -133,9 +134,13 @@ function RoutesTab() {
         ? showList 
           ? <RoutesList data={data}/>
           : <RoutesTable data={data}/>
-        : <Stack direction="column" align="center">
-            <Box>{t("feedback.empty-routes")}</Box>
-          </Stack>
+        : <Box w='100%' h='100%'>
+            <Center h='100%'>
+              <Box fontWeight='medium'>
+                {t('feedback.empty-routes')}
+              </Box>
+            </Center>
+          </Box>
       }
       <Spacer/>
       { data && data.row.length > 0

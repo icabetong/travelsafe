@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
   Box,
@@ -6,6 +7,8 @@ import {
   ButtonGroup,
   Center,
   Flex,
+  FormControl,
+  FormLabel,
   IconButton,
   Image,
   Modal,
@@ -15,6 +18,8 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Radio,
+  RadioGroup,
   Spacer,
   Spinner,
   Stack,
@@ -28,12 +33,13 @@ import {
   useToast,
   useDisclosure
 } from "@chakra-ui/react";
-import { Edit, RefreshCw, MoreVertical } from "react-feather";
+import { Edit, RefreshCw, MoreVertical, Filter } from "react-feather";
 import supabase from "../../core/Infrastructure";
 import PopoverBox from "../../shared/custom/PopoverBox";
 import PopoverSelect from "../../shared/custom/PopoverSelect";
 import DatePicker from "../../shared/custom/DatePicker";
 import Paginate from "../../shared/custom/Pagination";
+import PopoverForm from "../../shared/custom/PopoverForm";
 import { getPagination } from "../../shared/Tools"; 
 
 function PassengerTab() {
@@ -49,6 +55,8 @@ function PassengerTab() {
   const onVerificationInvoke = (user) => setVerification(user);
   const onVerificationDispose = () => setVerification(undefined);
   const showList = useBreakpointValue({base: true, md: false});
+  const [filters, setFilters] = useState({status: 'all'});
+  const { register, handleSubmit } = useForm();
 
   useEffect(() => {
     let unmounted = false;
@@ -84,17 +92,22 @@ function PassengerTab() {
   useEffect(() => {
     const fetch = async () => {
       const { from, to } = getPagination(page);
-      const { data, count } = await supabase
+      let query = supabase
         .from('accounts')
         .select(`*`, { count: "exact" })
         .order('lastname', { ascending: true })
         .eq('type', 'passenger')
         .range(from, to)
+      
+      if (filters.status !== 'all') {
+        query = query.eq('status', filters.status);
+      }
   
+      const { data, count } = await query;
       setData({ row: data, count: count });
     }
     fetch();
-  }, [page, timestamp]);
+  }, [page, timestamp, filters]);
 
   const onSubmit = async (data) => {
     const { id, ...row } = data;
@@ -160,14 +173,55 @@ function PassengerTab() {
             onClick={() => setTimestamp(new Date())}>
             {t("button.refresh")}
           </Button>
+          <PopoverForm
+            header={
+              <Box>{t("dialog.filter")}</Box>
+            }
+            trigger={
+              <Button
+                variant="outline"
+                size="sm"
+                leftIcon={<Filter size={16}/>}>
+                {t("button.filter")}
+              </Button>}>
+            <Stack 
+              as='form' 
+              direction='column'
+              align='center'
+              onSubmit={handleSubmit(setFilters)}>
+              <FormControl as='fieldset'>
+                <FormLabel as='legend'>
+                  {t("field.status")}
+                </FormLabel>
+                <RadioGroup defaultValue='all' name='status'>
+                  <Stack direction='column'>
+                    <Radio {...register('status')} value='all'>{t("types.all")}</Radio>
+                    <Radio {...register('status')} value='unverified'>{t("types.unverified")}</Radio>
+                    <Radio {...register('status')} value='submitted'>{t("types.submitted")}</Radio>
+                    <Radio {...register('status')} value='verified'>{t("types.verified")}</Radio>
+                  </Stack>
+                </RadioGroup>
+              </FormControl>
+              <Button
+                mt={2}
+                size='sm'
+                type='submit'>
+                {t("button.filter")}
+              </Button>
+            </Stack>
+          </PopoverForm>
         </ButtonGroup>
         { data && data.row.length > 0
           ? showList
             ? <PassengersList data={data}/>
             : <PassengerTable data={data} onSubmit={onSubmit} onVerify={onVerificationInvoke}/>
-          : <Stack direction="column" align="center">
-              <Box>{t("feedback.empty-passengers")}</Box>
-            </Stack>
+          : <Box w='100%' h='100%'>
+              <Center h='100%'>
+                <Box fontWeight='medium'>
+                  {t('feedback.empty-passengers')}
+                </Box>
+              </Center>
+            </Box>
         }
         <Spacer/>
         { data && data.row.length > 0
