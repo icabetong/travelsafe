@@ -40,7 +40,7 @@ function RoutesTab() {
       const { from, to } = getPagination(page);
       let query = supabase
         .from('routes')
-        .select(`routeId, source, destination, departure, arrival, accounts(id, lastname, firstname)`, { count: "exact" })
+        .select(`routeId, source, destination, departure, arrival, accounts!driverId(id, lastname, firstname)`, { count: "exact" })
         .order('source', { ascending: true })
         .range(from, to);
 
@@ -54,7 +54,7 @@ function RoutesTab() {
         query = query.ilike('destination', `%${filters.destination}%`)
       }
 
-      let { data, count } = await query;
+      let { data, count, error } = await query;
       if (!unmounted) {
         setData({ row: data, count: count });
       }

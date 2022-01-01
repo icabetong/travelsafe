@@ -135,7 +135,7 @@ function TravelList({data, onClick}) {
             height="fit-content"
             key={travel.travelId}
             p={4}
-            color='gray.400'
+            color='gray.500'
             onClick={() => onClick(travel)}>
             <Stack direction="column" justify="start">
               <Box fontSize="lg" fontWeight="bold" color={colorMode === 'dark' ? 'white' : 'gray.900'}>

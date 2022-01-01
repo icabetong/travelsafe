@@ -4,9 +4,19 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Center,
   Flex,
   IconButton,
+  Image,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
   Spacer,
+  Spinner,
   Stack,
   Table,
   Thead,
@@ -17,7 +27,7 @@ import {
   useToast,
   useDisclosure
 } from "@chakra-ui/react";
-import { Edit, RefreshCw } from "react-feather";
+import { Edit, RefreshCw, MoreVertical } from "react-feather";
 import supabase from "../../core/Infrastructure";
 import PopoverBox from "../../shared/custom/PopoverBox";
 import PopoverSelect from "../../shared/custom/PopoverSelect";
@@ -30,7 +40,44 @@ function PassengerTab() {
   const [timestamp, setTimestamp] = useState(new Date());
   const [page, setPage] = useState(0);
   const [data, setData] = useState({ row: [], count: 0 });
+  const [verification, setVerification] = useState();
+  const [downloading, setDownloading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [image, setImage] = useState();
   const toast = useToast();
+  const onVerificationInvoke = (user) => setVerification(user);
+  const onVerificationDispose = () => setVerification(undefined);
+
+  useEffect(() => {
+    let unmounted = false;
+    const fetch = async () => {
+      if (verification) {
+        setDownloading(true);
+        const { data } = await supabase.storage
+          .from('verification-ids')
+          .download(`${verification.accounts.id}.png`);
+
+        if (!unmounted) {
+          setDownloading(false);
+        }
+        if (data) {
+          let reader = new FileReader();
+          reader.readAsDataURL(data);
+
+          reader.onloadend = function() {
+            if (!unmounted) {
+              setImage(reader.result);
+            }
+          }
+        }
+      }
+    }
+
+    fetch();
+    return () => {
+      unmounted = true;
+    }
+  }, [verification]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -70,37 +117,99 @@ function PassengerTab() {
     setPage(page.selected);
   } 
 
+  const onVerify = async () => {
+    setSubmitting(true);
+    function onError() {
+      toast({
+        title: t("feedback.error-generic"),
+        status: "error",
+        isClosable: true,
+      });
+    }
+    if (!verification) {
+      onError();
+      return;
+    }
+
+    let { error } = await supabase 
+      .from('accounts')
+      .update({ status: 'verified' })
+      .eq('id', verification.accounts.id)
+
+    setSubmitting(false);
+    if (!error) {
+      onVerificationDispose();
+      toast({
+        title: t("feedback.user-verification-updated"),
+        status: "success",
+        isClosable: true,
+      });
+    } else onError();
+  }
+
   return (
-    <Flex w="100%" direction="column">
-      <ButtonGroup mb="2">
-        <Button
-          variant='outline'
-          size='sm'
-          leftIcon={<RefreshCw size={16}/>}
-          onClick={() => setTimestamp(new Date())}>
-          {t("button.refresh")}
-        </Button>
-      </ButtonGroup>
-      { data && data.row.length > 0
-        ? <PassengerTable data={data} onSubmit={onSubmit}/>
-        : <Stack direction="column" align="center">
-            <Box>{t("feedback.empty-passengers")}</Box>
-          </Stack>
+    <>
+      <Flex w="100%" direction="column">
+        <ButtonGroup mb="2">
+          <Button
+            variant='outline'
+            size='sm'
+            leftIcon={<RefreshCw size={16}/>}
+            onClick={() => setTimestamp(new Date())}>
+            {t("button.refresh")}
+          </Button>
+        </ButtonGroup>
+        { data && data.row.length > 0
+          ? <PassengerTable data={data} onSubmit={onSubmit} onVerify={onVerificationInvoke}/>
+          : <Stack direction="column" align="center">
+              <Box>{t("feedback.empty-passengers")}</Box>
+            </Stack>
+        }
+        <Spacer/>
+        { data && data.row.length > 0
+          && <Paginate
+                onPageChange={onPageChanged}
+                pageCount={data.count}
+                currentPage={page}/>
+        }
+      </Flex>
+      { verification &&
+        <Modal isOpen={verification} onClose={onVerificationDispose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>{t("dialog.verification-data")}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              { downloading 
+                ? <Center>
+                    <Spinner/>
+                  </Center>
+                : image && <Image src={image}/>
+              }
+            </ModalBody>
+
+            <ModalFooter>
+              <Button
+                onClick={onVerify}
+                isLoading={submitting}>
+                {t("button.verify")}
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={onVerificationDispose}>
+                {t("button.cancel")}
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       }
-      <Spacer/>
-      { data && data.row.length > 0
-        && <Paginate
-              onPageChange={onPageChanged}
-              pageCount={data.count}
-              currentPage={page}/>
-      }
-    </Flex>
+    </>
   );
 }
 
 export default PassengerTab;
 
-function PassengerTable({data, onSubmit}) {
+function PassengerTable({data, onSubmit, onVerify}) {
   const { t } = useTranslation();
   const { nameFormOpen, onNameFormOpen, onNameFormClose } = useDisclosure();
   const { addressFormOpen, onAddressFormOpen, onAddressFormClose } = useDisclosure();
@@ -117,6 +226,7 @@ function PassengerTable({data, onSubmit}) {
           <Th>{t("field.gender")}</Th>
           <Th>{t("field.birthdate")}</Th>
           <Th>{t("field.contact")}</Th>
+          <Th>{t("field.status")}</Th>
         </Tr>
       </Thead>
       <Tbody>
@@ -185,6 +295,18 @@ function PassengerTable({data, onSubmit}) {
                     values={{contact: row.contact}}>
                     {row.contact}
                   </PopoverBox>
+                </Td>
+                <Td>
+                  <Box>
+                    <Box as='span' mr={2}>{t(`types.${row.accounts.status}`)}</Box>
+                    { row.accounts.status === 'submitted' &&
+                      <IconButton 
+                        variant='ghost' 
+                        size='xs' 
+                        icon={<MoreVertical size={16}/>}
+                        onClick={() => onVerify(row)}/>
+                    }
+                  </Box>
                 </Td>
               </Tr>
             ) 

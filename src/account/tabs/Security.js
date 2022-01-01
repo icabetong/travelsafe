@@ -19,7 +19,7 @@ import supabase from "../../core/Infrastructure";
 
 function SecurityTab() {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const toast = useToast();
   const [open, setOpen] = useState(false);
   const [sending, setSending] = useState(false);
@@ -52,15 +52,22 @@ function SecurityTab() {
       direction="column"
       align="start">
       <SecurityItem
-        title="account.password-reset"
-        subtitle="account.password-reset-subtitle"
+        title={t("account.password-reset")}
+        subtitle={t("account.password-reset-subtitle")}
         buttonText="button.get-started"
         onClick={onOpen}/>
       <SecurityItem
-        title="account.verification-status"
-        subtitle="account.veriification-status-subtitle"
-        buttonText="button.get-verified"
-        onClick={() => navigate("/verify")}/>
+        title={t("account.verification-status")}
+        subtitle={
+          <Trans
+            i18nKey="account.verification-status-subtitle"
+            values={{ status: profile.status }}
+            components={{
+              focus: <Box as="span" fontWeight="bold"/>
+            }}/>
+        }
+        buttonText={profile !== 'verified' ? "button.get-verified" : undefined}
+        onClick={profile !== 'verified' ? () => navigate("/verify") : undefined}/>
       { open &&
         <Modal isOpen={open} onClose={onClose} closeOnOverlayClick={!sending}>
           <ModalOverlay />
@@ -102,8 +109,8 @@ function SecurityItem(props) {
 
   return (
     <Box mt={2} mb={4}>
-    <Box fontSize="lg" fontWeight="semibold">{t(props.title)}</Box>
-      <Box mb={4} fontSize="sm" color='gray.400'>{t(props.subtitle)}</Box>
+    <Box fontSize="lg" fontWeight="semibold">{props.title}</Box>
+      <Box mb={4} fontSize="sm" color='gray.500'>{props.subtitle}</Box>
       { props.buttonText && props.onClick
         &&  <Button 
               size='sm'

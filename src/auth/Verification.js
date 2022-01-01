@@ -109,7 +109,7 @@ function Verification() {
         fontSize='xl'>
         {t("feedback.under-verification")}
       </Box>
-      <Box color="gray.400" mb={8}>
+      <Box color="gray.500" mb={8}>
         {t("feedback.under-verification-subtitle")}
       </Box>
       <Button

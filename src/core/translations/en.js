@@ -6,6 +6,7 @@ const english = {
       "account": "Account",
       "dashboard": "Dashboard",
       "console": "Console",
+      "verification": "Verification"
     },
     "field": {
       "email": "Email",
@@ -26,7 +27,8 @@ const english = {
       "arrival": "Arrival",
       "inactive-routes": "Show Inactive Routes",
       "with-source": "With Source",
-      "with-destination": "With Destination"
+      "with-destination": "With Destination",
+      "status": "Status"
     },
     "placeholder": {
       "email": "example@gmail.com",
@@ -51,16 +53,21 @@ const english = {
       "go-to-dashboard": "Go to Dashboard",
       "scan-qr-code": "Scan QR Code",
       "start-travel": "Start Travel",
+      "get-verified": "Get Verified",
       "complete-travel": "Complete Travel",
       "update-account-information": "Update Account Information",
       "filter": "Filter",
       "close": "Close",
+      "verify": "Verify"
     },
     "types": {
       "male": "Male",
       "female": "Female",
       "passenger": "Passenger",
       "driver": "Driver",
+      "unverified": "Unverified",
+      "submitted": "Submitted",
+      "verified": "Verified"
     },
     "auth": {
       "sign-in": "Sign-in with your account",
@@ -83,7 +90,9 @@ const english = {
       "security": "Security",
       "travels": "Travels",
       "password-reset": "Password Reset",
-      "password-reset-subtitle": "If you forgot your password, you can reset it here."
+      "password-reset-subtitle": "If you forgot your password, you can reset it here.",
+      "verification-status": "Verification Status",
+      "verification-status-subtitle": "Your verification status: <focus>{{status}}</focus>"
     },
     "dashboard": {
       "vehicle-details": "Vehicle Details",
@@ -111,6 +120,10 @@ const english = {
     "concat": {
       "welcome": "Welcome, {{name}}",
       "or": "or",
+    },
+    "feedback": {
+      "under-verification": "Your account is under verification",
+      "under-verification-subtitle": "For legal and public safety purposes, we'll check if your submitted ID is valid and will proceed to activate your account."
     }
   }
 }
