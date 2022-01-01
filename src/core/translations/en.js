@@ -36,6 +36,7 @@ const english = {
       "confirm-password": "********",
       "source": "ex. San Jose",
       "destination": "ex. Lupao",
+      "select-an-image": "Select an image"
     },
     "button": {
       "sign-in": "Sign-in",
@@ -58,7 +59,9 @@ const english = {
       "update-account-information": "Update Account Information",
       "filter": "Filter",
       "close": "Close",
-      "verify": "Verify"
+      "verify": "Verify",
+      "choose-image": "Choose Image",
+      "upload": "Upload"
     },
     "types": {
       "male": "Male",

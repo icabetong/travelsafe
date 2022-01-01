@@ -24,6 +24,7 @@ import {
   Tr,
   Th,
   Td,
+  useBreakpointValue,
   useToast,
   useDisclosure
 } from "@chakra-ui/react";
@@ -45,6 +46,7 @@ function DriverTab() {
   const [submitting, setSubmitting] = useState(false);
   const [image, setImage] = useState();
   const toast = useToast();
+  const showList = useBreakpointValue({base: true, md: false});
 
   const onVerificationInvoke = (user) => setVerification(user);
   const onVerificationDispose = () => setVerification(undefined);
@@ -169,7 +171,9 @@ function DriverTab() {
           </Button>
         </ButtonGroup>
         { data && data.row.length > 0
-          ? <DriverTable data={data} onSubmit={onSubmit} onVerify={onVerificationInvoke}/>
+          ? showList
+            ? <DriversList data={data}/>
+            : <DriverTable data={data} onSubmit={onSubmit} onVerify={onVerificationInvoke}/>
           : <Stack direction="column" align="center">
               <Box>{t("feedback.empty-drivers")}</Box>
             </Stack>
@@ -337,5 +341,33 @@ function DriverTable({data, onSubmit, onVerify}) {
         </Tbody>
       </Table>
     </>
+  )
+}
+
+function DriversList({data}) {
+  return (
+    <Box mt={2}>
+      { data.row.map((driver) => {
+          return (
+            <DriverListItem
+              key={driver.id}
+              driver={driver}/>
+          );
+        })
+      }
+    </Box>
+  )
+}
+
+function DriverListItem({driver}) {
+  return (
+    <Stack direction='column' spacing={0} py={4}>
+      <Box fontWeight='semibold'>
+        {`${driver.accounts.firstname} ${driver.accounts.lastname}`}
+      </Box>
+      <Box fontSize='sm' color='gray.500'>
+        {driver.accounts.contact}
+      </Box>
+    </Stack>
   )
 }

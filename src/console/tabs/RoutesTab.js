@@ -17,6 +17,7 @@ import {
   Tr,
   Th,
   Td,
+  useBreakpointValue
 } from "@chakra-ui/react";
 import { RefreshCw, Filter } from "react-feather";
 import { format } from "date-fns";
@@ -32,6 +33,7 @@ function RoutesTab() {
   const [page, setPage] = useState(0);
   const { register, handleSubmit } = useForm();
   const [filters, setFilters] = useState({ inactive: false });
+  const showList = useBreakpointValue({base: true, md: false});
 
   useEffect(() => {
     let unmounted = false;
@@ -54,7 +56,7 @@ function RoutesTab() {
         query = query.ilike('destination', `%${filters.destination}%`)
       }
 
-      let { data, count, error } = await query;
+      let { data, count } = await query;
       if (!unmounted) {
         setData({ row: data, count: count });
       }
@@ -128,7 +130,9 @@ function RoutesTab() {
         </PopoverForm>
       </Stack>
       { data && data.row.length > 0
-        ? <RoutesTable data={data}/>
+        ? showList 
+          ? <RoutesList data={data}/>
+          : <RoutesTable data={data}/>
         : <Stack direction="column" align="center">
             <Box>{t("feedback.empty-routes")}</Box>
           </Stack>
@@ -185,5 +189,34 @@ function RoutesTable({ data }) {
         }
       </Tbody>
     </Table>
+  );
+}
+
+function RoutesList({data}) {
+  return (
+    <Box mt={2}>
+      { data.row.map((route) => {
+          return <RouteListItem key={route.routeId} route={route}/>
+        })
+      }
+    </Box>
+  )
+}
+
+function RouteListItem({route}) {
+  const pattern = "H:mm aa - m/d/yy";
+
+  return (
+    <Stack direction='column' spacing={0} py={4}>
+      <Box fontWeight='semibold'>
+        {`${route.source} - ${route.destination}`}
+      </Box>
+      <Box fontSize='sm' color='gray.400'>
+        {`${format(Date.parse(route.departure), pattern)}`}
+      </Box>
+      <Box fontSize="sm" color='gray.400'>
+        {`${route.accounts.firstname} ${route.accounts.lastname}`}
+      </Box>
+    </Stack>
   );
 }

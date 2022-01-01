@@ -24,6 +24,7 @@ import {
   Tr,
   Th,
   Td,
+  useBreakpointValue,
   useToast,
   useDisclosure
 } from "@chakra-ui/react";
@@ -47,6 +48,7 @@ function PassengerTab() {
   const toast = useToast();
   const onVerificationInvoke = (user) => setVerification(user);
   const onVerificationDispose = () => setVerification(undefined);
+  const showList = useBreakpointValue({base: true, md: false});
 
   useEffect(() => {
     let unmounted = false;
@@ -160,7 +162,9 @@ function PassengerTab() {
           </Button>
         </ButtonGroup>
         { data && data.row.length > 0
-          ? <PassengerTable data={data} onSubmit={onSubmit} onVerify={onVerificationInvoke}/>
+          ? showList
+            ? <PassengersList data={data}/>
+            : <PassengerTable data={data} onSubmit={onSubmit} onVerify={onVerificationInvoke}/>
           : <Stack direction="column" align="center">
               <Box>{t("feedback.empty-passengers")}</Box>
             </Stack>
@@ -314,5 +318,33 @@ function PassengerTable({data, onSubmit, onVerify}) {
         }
       </Tbody>
     </Table>
+  )
+}
+
+function PassengersList({data}) {
+  return (
+    <Box mt={2}>
+      { data.row.map((passenger) => {
+          return (
+            <PassengerListItem
+              key={passenger.id}
+              passenger={passenger}/>
+          );
+        })
+      }
+    </Box>
+  )
+}
+
+function PassengerListItem({passenger}) {
+  return (
+    <Stack direction='column' spacing={0}>
+      <Box fontWeight='semibold'>
+        {`${passenger.firstname} ${passenger.lastname}`}
+      </Box>
+      <Box fontSize='sm' color='gray.500'>
+        {passenger.contact}
+      </Box>
+    </Stack>
   )
 }
