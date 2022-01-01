@@ -7,6 +7,7 @@ import {
   Flex,
   Stack,
   useToast,
+  useColorMode,
   useBreakpointValue
 } from "@chakra-ui/react";
 import Page from "../shared/custom/Page";
@@ -22,6 +23,7 @@ function Main() {
   const size = useBreakpointValue({base: 256});
   const [scan, setScan] = useState(false);
   const toast = useToast();
+  const { colorMode } = useColorMode();
 
   const onScanInvoke = () => setScan(true);
   const onScanDismiss = () => setScan(false);
@@ -73,8 +75,8 @@ function Main() {
         direction={{base: "column", md: "row-reverse"}}
         align="center"
         justifyContent="space-around">
-        <Stack>
-          <Box>{t("info.your-qr-code")}</Box>
+        <Stack align='center' justify='center' mt={{base: 4, sm: 0}} p={4}>
+          <Box fontWeight="bold" fontSize="lg">{t("info.your-qr-code")}</Box>
           <Box
             as={QRCode}
             value={user.id}
@@ -84,7 +86,7 @@ function Main() {
             p={4}
             border="1px"
             borderRadius="md"
-            borderColor="gray.500"/>
+            borderColor={colorMode === 'dark' ? 'gray.500' : 'gray.400'}/>
           <Box
             mt={2}
             color="gray.500"
@@ -94,14 +96,13 @@ function Main() {
           </Box>
         </Stack>
         <Box w={{base: 0, md: 16}}/>
-        <Stack>
+        <Stack align='center' justify='center' my={4}>
           <Button
-            mt={8}
             onClick={onScanInvoke}>
             {t("button.scan-qr-code")}
           </Button>
           <Button
-            variant="ghost"
+            variant="outline"
             colorScheme="gray"
             fontSize="sm"
             onClick={() => navigate("/account")}>

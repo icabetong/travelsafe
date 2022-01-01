@@ -10,7 +10,7 @@ import Landing from "../main/Landing";
 import SignIn from "../auth/SignIn";
 import SignUp from "../auth/SignUp";
 import theme from "../shared/Theme";
-import ConditionalRoute from "../shared/custom/ConditionalRoute";
+import PrivateRoute from "../shared/custom/PrivateRoute";
 import Verification from "../auth/Verification";
 
 function Core() {
@@ -39,34 +39,34 @@ function Core() {
           <Route 
             path="/account" 
             element={
-              <ConditionalRoute 
+              <PrivateRoute 
                 to="/signin">
                 <Account/>
-              </ConditionalRoute>
+              </PrivateRoute>
           }/>
           <Route 
             path="/dashboard" 
             element={
-              <ConditionalRoute 
+              <PrivateRoute 
                 to="/signin">
                 <Dashboard/>
-              </ConditionalRoute>
+              </PrivateRoute>
           }/>
           <Route 
             path="/console" 
             element={
-              <ConditionalRoute 
+              <PrivateRoute 
                 to="/signin">
                 <Console/>
-              </ConditionalRoute>
+              </PrivateRoute>
           }/>
           <Route
             path="/verify"
             element={
-              <ConditionalRoute
+              <PrivateRoute
                 to="/signin">
                 <Verification/>
-              </ConditionalRoute>
+              </PrivateRoute>
             }/>
         </Routes>
       </BrowserRouter>
