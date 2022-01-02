@@ -61,7 +61,9 @@ const english = {
       "close": "Close",
       "verify": "Verify",
       "choose-image": "Choose Image",
-      "upload": "Upload"
+      "upload": "Upload",
+      "show": "Show",
+      "hide": "Hide",
     },
     "types": {
       "male": "Male",

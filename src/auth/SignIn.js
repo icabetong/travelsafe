@@ -94,6 +94,9 @@ function AuthForm(props) {
   const { colorMode } = useColorMode(); 
   const { handleSubmit, register, formState: { errors } } = useForm();
   const navigate = useNavigate();
+  const [show, setShow] = useState(false);
+
+  const handleShow = () => setShow(!show);
 
   return (
     <Flex
@@ -130,11 +133,19 @@ function AuthForm(props) {
       </FormControl>
       <FormControl mb={8} isInvalid={errors.password && errors.password} isRequired>
         <FormLabel htmlFor='password'>{t("field.password")}</FormLabel>
-        <Input 
-          id='password' 
-          type='password'
-          placeholder={t("placeholder.password")}
-          {...register("password", { required: "feedback.auth_empty_password", min: 8 })} />
+        <InputGroup>
+          <Input 
+            id='password' 
+            type={show ? 'text' : 'password'}
+            pr='4.5rem'
+            placeholder={t("placeholder.password")}
+            {...register("password", { required: "feedback.auth_empty_password", min: 8 })} />
+          <InputRightElement width='4.5rem'>
+            <Button h='1.5rem' size='sm' onClick={handleShow} colorScheme='gray'>
+              {t(show ? "button.hide" : "button.show")}
+            </Button>
+          </InputRightElement>
+        </InputGroup>
         <FormErrorMessage>{t(errors.password && errors.password.message)}</FormErrorMessage>
       </FormControl>
       <Button
