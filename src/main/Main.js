@@ -35,7 +35,7 @@ function Main() {
     });
   }
 
-  const onDataCaptured = async (scanned) => {
+  const onDataCaptured = (scanned) => {
     console.log(scanned);
     const onShowError = (title) => {
       toast({
@@ -45,27 +45,31 @@ function Main() {
       });
     }
 
-    let { data, error } = await supabase
-      .from('routes')
-      .select()
-      .eq('driverId', scanned)
-      .eq('finished', false)
-      .single()
-    if (error) onShowError("feedback.error-no-routes");
+    const submit = async (qrdata) => {
+      let { data, error } = await supabase
+        .from('routes')
+        .select()
+        .eq('driverId', qrdata)
+        .eq('finished', false)
+        .single()
+      if (error) onShowError("feedback.error-no-routes");
 
-    let { err } = await supabase.from('travels')
-      .insert({
-        routeId: data.routeId,
-        userId: user.id
-      });
-    if (!err) {
-      setScan(false);
-      toast({
-        title: t("feedback.tracing-details-submitted"),
-        status: "success",
-        isClosable: true
-      });
-    } else onShowError("feedback.error-generic") 
+      let { err } = await supabase.from('travels')
+        .insert({
+          routeId: data.routeId,
+          userId: user.id
+        });
+      if (!err) {
+        setScan(false);
+        toast({
+          title: t("feedback.tracing-details-submitted"),
+          status: "success",
+          isClosable: true
+        });
+      } else onShowError("feedback.error-generic") 
+    }
+
+    submit(scanned)
   }
 
   return (
