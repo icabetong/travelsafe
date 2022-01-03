@@ -101,13 +101,10 @@ function DriverTab() {
         .range(from, to);
 
       if (filters.status !== 'all') {
-        console.log(filters.status)
         query = query.eq('status', filters.status);
       }
 
       const { data, count } = await query;
-      console.log(data)
-
       if (!unmounted) {
         setData({ row: data, count: count });
       }
@@ -226,17 +223,19 @@ function DriverTab() {
           ? showList
             ? <DriversList data={data}/>
             : <DriverTable data={data} onSubmit={onSubmit} onVerify={onVerificationInvoke}/>
-          : <Box w='100%'>
+          : <Box w='100%' h='100%'>
               <Center h='100%'>
                 <Box>{t('feedback.empty-drivers')}</Box>
               </Center>
             </Box>
         }
         <Spacer/>
-        <Paginate
-          onPageChange={onPageChanged}
-          pageCount={data.count}
-          currentPage={page}/>
+        { data && data.row.length > 0
+          && <Paginate
+              onPageChange={onPageChanged}
+              pageCount={data.count}
+              currentPage={page}/>
+        }
       </Flex>
       { verification &&
         <Modal isOpen={verification} onClose={onVerificationDispose}>

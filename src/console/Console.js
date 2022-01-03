@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Box,
@@ -10,6 +11,7 @@ import {
   Tab, 
   TabPanel
 } from "@chakra-ui/react";
+import { useAuth } from "../auth/Provider";
 import Page from "../shared/custom/Page";
 
 const PassengerTab = lazy(() => import('./tabs/PassengerTab'));
@@ -18,6 +20,7 @@ const RoutesTab = lazy(() => import('./tabs/RoutesTab'));
 
 function Console() {
   const { t } = useTranslation();
+  const { profile } = useAuth();
 
   const loading = (
     <Box w='100%'>
@@ -27,7 +30,7 @@ function Console() {
     </Box>
   )
 
-  return (
+  const content = (
     <Page title={t("navigation.console")}>
       <Box w="100%" h="100%" px={8}>
         <Tabs minW="100%" minH="80vh">
@@ -57,6 +60,12 @@ function Console() {
         </Tabs>
       </Box>
     </Page>
+  )
+
+  return (
+    profile.type === 'admin'
+      ? content
+      : <Navigate to="/error"/>
   );
 }
 
