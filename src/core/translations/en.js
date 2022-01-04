@@ -57,6 +57,7 @@ const english = {
       "get-verified": "Get Verified",
       "complete-travel": "Complete Travel",
       "update-account-information": "Update Account Information",
+      "back-to-home": "Back to Home",
       "filter": "Filter",
       "close": "Close",
       "verify": "Verify",
@@ -128,6 +129,8 @@ const english = {
       "or": "or",
     },
     "feedback": {
+      "invalid-route": "Whoops!",
+      "invalid-route-subtitle": "Sorry, but that page doesn't exist; it might have been moved or deleted. Either way, try going back to the previous page.",
       "empty-passengers": "There are no passengers registered",
       "empty-drivers": "There are no drivers registered",
       "empty-routes": "There are no routes conducted",
