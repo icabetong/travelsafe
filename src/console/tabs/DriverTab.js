@@ -348,7 +348,6 @@ function DriverTable({data, onSubmit, onVerify, onHistory}) {
           <Tr>
             <Th>{t("field.name")}</Th>
             <Th>{t("field.address")}</Th>
-            <Th>{t("field.gender")}</Th>
             <Th>{t("field.birthdate")}</Th>
             <Th>{t("field.contact")}</Th>
             <Th>{t("field.status")}</Th>
@@ -383,19 +382,6 @@ function DriverTable({data, onSubmit, onVerify, onHistory}) {
                       values={{address: row.address}}>
                       {row.address}
                     </PopoverBox>
-                  </Td>
-                  <Td>
-                    <PopoverSelect
-                      id={row.id}
-                      open={genderFormOpen}
-                      onOpen={onGenderFormOpen}
-                      onClose={onGenderFormClose}
-                      onSubmit={onSubmit}
-                      field="gender"
-                      default={row.gender}
-                      options={['male', 'female']}>
-                      {t(`types.${row.gender}`)}
-                    </PopoverSelect>
                   </Td>
                   <Td>
                     <Box as="span" mr="2">{row.birthdate}</Box>
