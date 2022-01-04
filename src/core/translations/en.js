@@ -28,7 +28,8 @@ const english = {
       "inactive-routes": "Show Inactive Routes",
       "with-source": "With Source",
       "with-destination": "With Destination",
-      "status": "Status"
+      "status": "Status",
+      "history": "History"
     },
     "placeholder": {
       "email": "example@gmail.com",
@@ -123,6 +124,7 @@ const english = {
       "select-date": "Select Birth Date",
       "send-password-reset-title": "Send Password Reset Email",
       "send-password-reset-subtitle": "To reset your password, we'll send a reset link to your registered email address: <focus>{{email}}</focus>",
+      "travel-history": "Travel History",
     },
     "concat": {
       "welcome": "Welcome, {{name}}",
