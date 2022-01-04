@@ -12,6 +12,7 @@ import SignUp from "../auth/SignUp";
 import theme from "../shared/Theme";
 import PrivateRoute from "../shared/custom/PrivateRoute";
 import Verification from "../auth/Verification";
+import ErrorPage from "../error";
 
 function Core() {
   const { user } = useAuth();
@@ -67,6 +68,11 @@ function Core() {
                 to="/signin">
                 <Verification/>
               </PrivateRoute>
+            }/>
+          <Route
+            path='/error'
+            element={
+              <ErrorPage/>
             }/>
         </Routes>
       </BrowserRouter>

@@ -32,7 +32,7 @@ function Console() {
 
   const content = (
     <Page title={t("navigation.console")}>
-      <Box w="100%" h="100%" px={8}>
+      <Box w="100%" h="100%" px={{base: 4, md: 8}}>
         <Tabs minW="100%" minH="80vh">
           <TabList>
             <Tab>{t("console.passengers")}</Tab>
