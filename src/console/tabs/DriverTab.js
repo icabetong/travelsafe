@@ -37,7 +37,6 @@ import { Edit, RefreshCw, MoreVertical, Filter, ExternalLink } from "react-feath
 import { format } from "date-fns";
 import supabase from "../../core/Infrastructure";
 import PopoverBox from "../../shared/custom/PopoverBox";
-import PopoverSelect from "../../shared/custom/PopoverSelect";
 import DatePicker from "../../shared/custom/DatePicker";
 import Paginate from "../../shared/custom/Pagination";
 import PopoverForm from "../../shared/custom/PopoverForm";
@@ -337,7 +336,6 @@ function DriverTable({data, onSubmit, onVerify, onHistory}) {
   const { nameFormOpen, onNameFormOpen, onNameFormClose } = useDisclosure();
   const { addressFormOpen, onAddressFormOpen, onAddressFormClose } = useDisclosure();
   const { contactFormOpen, onContactFormOpen, onContactFormClose } = useDisclosure();
-  const { genderFormOpen, onGenderFormOpen, onGenderFormClose } = useDisclosure();
   const { dateFormOpen, onDateFormOpen, onDateFormClose } = useDisclosure();
   const { plateFormOpen, onPlateFormOpen, onPlateFormClose } = useDisclosure();
 
