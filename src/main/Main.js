@@ -20,7 +20,7 @@ function Main() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, profile } = useAuth();
-  const size = useBreakpointValue({base: 256});
+  const size = useBreakpointValue({ base: 256 });
   const [scan, setScan] = useState(false);
   const toast = useToast();
   const { colorMode } = useColorMode();
@@ -66,31 +66,31 @@ function Main() {
           status: "success",
           isClosable: true
         });
-      } else onShowError("feedback.error-generic") 
+      } else onShowError("feedback.error-generic")
     }
 
     submit(scanned)
   }
 
   return (
-    <Page title={profile && t("concat.welcome", {name: profile.firstname})} includeFooter>
+    <Page title={profile && t("concat.welcome", { name: profile.firstname })} includeFooter>
       <Flex
         w="100%"
-        direction={{base: "column", md: "row-reverse"}}
+        direction={{ base: "column", md: "row-reverse" }}
         align="center"
         justifyContent="space-around">
-        <Stack align='center' justify='center' mt={{base: 4, sm: 0}} p={4}>
+        <Stack align='center' justify='center' mt={{ base: 4, sm: 0 }} p={4}>
           <Box fontWeight="bold" fontSize="lg">{t("info.your-qr-code")}</Box>
           <Box
             as={QRCode}
             value={user.id}
             size={size}
-            width={{base: "xs", md: "md"}}
-            height={{base: "xs", md: "md"}}
+            width={{ base: "xs", md: "md" }}
+            height={{ base: "xs", md: "md" }}
             p={4}
             border="1px"
             borderRadius="md"
-            borderColor={colorMode === 'dark' ? 'gray.500' : 'gray.400'}/>
+            borderColor={colorMode === 'dark' ? 'gray.500' : 'gray.400'} />
           <Box
             mt={2}
             color="gray.500"
@@ -99,7 +99,7 @@ function Main() {
             {t("info.qr-code-save")}
           </Box>
         </Stack>
-        <Box w={{base: 0, md: 16}}/>
+        <Box w={{ base: 0, md: 16 }} />
         <Stack align='center' justify='center' my={4}>
           <Button
             onClick={onScanInvoke}>
@@ -119,7 +119,7 @@ function Main() {
           open={scan}
           onClose={onScanDismiss}
           onDataCapture={onDataCaptured}
-          onDataError={onScanError}/>
+          onDataError={onScanError} />
       }
     </Page>
   );
