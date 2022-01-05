@@ -37,7 +37,7 @@ function Account() {
             <Tab>{t("account.travels")}</Tab>
           </TabList>
 
-          <TabPanels display="flex" minH="75vh">
+          <TabPanels display="flex" minH="75vh" w="100%">
             <TabPanel display="flex" flexGrow="1">
               <Suspense fallback={loading}>
                 <InformationTab/>

@@ -11,6 +11,10 @@ import {
   FormLabel,
   IconButton,
   Image,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -33,7 +37,7 @@ import {
   useToast,
   useDisclosure
 } from "@chakra-ui/react";
-import { Edit, RefreshCw, MoreVertical, Filter, ExternalLink } from "react-feather";
+import { Edit, RefreshCw, MoreVertical, Filter } from "react-feather";
 import supabase from "../../core/Infrastructure";
 import PopoverBox from "../../shared/custom/PopoverBox";
 import PopoverSelect from "../../shared/custom/PopoverSelect";
@@ -86,7 +90,9 @@ function PassengerTab() {
       }
     }
 
-    fetch();
+    if (account) {
+      fetch();
+    }
     return () => {
       unmounted = true;
     }
@@ -352,7 +358,7 @@ function PassengerTable({data, onSubmit, onVerify, onHistory}) {
           <Th>{t("field.birthdate")}</Th>
           <Th>{t("field.contact")}</Th>
           <Th>{t("field.status")}</Th>
-          <Th>{t("field.history")}</Th>
+          <Th>{t("field.actions")}</Th>
         </Tr>
       </Thead>
       <Tbody>
@@ -436,11 +442,22 @@ function PassengerTable({data, onSubmit, onVerify, onHistory}) {
                 </Td>
                 <Td>
                   <Flex align='center' justify='center'>
-                    <IconButton 
-                      size='xs'
-                      colorScheme='gray'
-                      icon={<ExternalLink size={16}/>}
-                      onClick={() => onHistory(row)}/>
+                    <Menu>
+                      <MenuButton
+                        as={IconButton}
+                        size='xs'
+                        colorScheme='gray'
+                        variant='ghost'
+                        icon={<MoreVertical size={16}/>}/>
+                        <MenuList>
+                        <MenuItem onClick={() => onHistory(row)}>
+                          {t("button.view-history")}
+                        </MenuItem>
+                        <MenuItem>
+                          {t("button.send-sms")}
+                        </MenuItem>
+                      </MenuList>
+                    </Menu>
                   </Flex>
                 </Td>
               </Tr>
@@ -484,7 +501,7 @@ function RouteHistoryList({data}) {
   return (
     <Box>
       { data.map((travel) => {
-          return <RouteHistoryListItem row={travel}/>
+          return <RouteHistoryListItem key={travel.travelId} row={travel}/>
         })
       }
     </Box>

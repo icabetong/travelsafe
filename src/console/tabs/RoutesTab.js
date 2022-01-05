@@ -8,7 +8,19 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  IconButton,
   Input,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
   Spacer,
   Stack,
   Switch,
@@ -20,7 +32,7 @@ import {
   Td,
   useBreakpointValue
 } from "@chakra-ui/react";
-import { RefreshCw, Filter } from "react-feather";
+import { RefreshCw, Filter, MoreVertical } from "react-feather";
 import { format } from "date-fns";
 import supabase from "../../core/Infrastructure";
 import Paginate from "../../shared/custom/Pagination";
@@ -34,7 +46,42 @@ function RoutesTab() {
   const [page, setPage] = useState(0);
   const { register, handleSubmit } = useForm();
   const [filters, setFilters] = useState({ inactive: false });
+  const [route, setRoute] = useState();
+  const [passengers, setPassengers] = useState({ row: [], count: 0, error: undefined });
   const showList = useBreakpointValue({base: true, md: false});
+
+  const onRoutePassengersView = (route) => setRoute(route);
+  const onRoutePassengersDispose = () => {
+    setRoute(undefined);
+    setPassengers({ row: [], count: 0, error: undefined })
+  }
+
+  useEffect(() => {
+    let unmounted = false;
+
+    const fetch = async () => {
+      const { data, count, error } = await supabase
+        .from('travels')
+        .select('routeId, accounts(id, lastname, firstname, contact)', { count: 'exact' })
+        .order('routeId', { ascending: true })
+        .eq('routeId', route.routeId)
+
+      if (error) {
+        setPassengers({ error: error });
+      }
+
+      if (!unmounted) {
+        setPassengers({ row: data, count: count });
+      }
+    }
+
+    if (route) {
+      fetch();
+    }
+    return () => {
+      unmounted = true;
+    }
+  }, [route]);
 
   useEffect(() => {
     let unmounted = false;
@@ -133,7 +180,7 @@ function RoutesTab() {
       { data && data.row.length > 0
         ? showList 
           ? <RoutesList data={data}/>
-          : <RoutesTable data={data}/>
+          : <RoutesTable data={data} onViewPassengers={onRoutePassengersView}/>
         : <Box w='100%' h='100%'>
             <Center h='100%'>
               <Box fontWeight='medium'>
@@ -149,13 +196,39 @@ function RoutesTab() {
               pageCount={data.count}
               currentPage={page}/>
       }
+      {
+        <Modal isOpen={route} onClose={onRoutePassengersDispose} scrollBehavior="inside">
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>{t("dialog.passengers")}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              { passengers &&
+                  <PassengerList data={passengers.row}/>
+              }
+            </ModalBody>
+
+            <ModalFooter>
+              <Button
+                mr={2}
+                onClick={onRoutePassengersDispose}>
+                {t("button.close")}
+              </Button>
+              <Button
+                variant='ghost'>
+                {t("button.send-sms")}
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      }
     </Flex>
   );
 }
 
 export default RoutesTab;
 
-function RoutesTable({ data }) {
+function RoutesTable({ data, onViewPassengers }) {
   const { t } = useTranslation();
 
   return (
@@ -167,6 +240,7 @@ function RoutesTable({ data }) {
           <Th>{t("field.departure")}</Th>
           <Th>{t("field.arrival")}</Th>
           <Th>{t("field.driver-name")}</Th>
+          <Th>{t("field.actions")}</Th>
         </Tr>
       </Thead>
       <Tbody>
@@ -188,6 +262,23 @@ function RoutesTable({ data }) {
                 }
                 </Td>
                 <Td>{`${row.accounts.firstname} ${row.accounts.lastname}`}</Td> 
+                <Td>
+                  <Box d='flex' align='center' justifyContent='center'>
+                    <Menu>
+                      <MenuButton
+                        as={IconButton}
+                        size='xs'
+                        colorScheme='gray'
+                        variant='ghost'
+                        icon={<MoreVertical size={16}/>}/>
+                        <MenuList>
+                        <MenuItem onClick={() => onViewPassengers(row)}>
+                          {t("button.view-passengers")}
+                        </MenuItem>
+                      </MenuList>
+                    </Menu>
+                  </Box>
+                </Td>
               </Tr>
             );
           })
@@ -224,4 +315,31 @@ function RouteListItem({route}) {
       </Box>
     </Stack>
   );
+}
+
+function PassengerList({data}) {
+  return (
+    <Box>
+      {data.map((passenger) => {
+        return (
+          <PassengerListItem
+            key={passenger.accounts.id}
+            passenger={passenger}/>
+        )
+      })}
+    </Box>
+  )
+}
+
+function PassengerListItem({ passenger }) {
+  return (
+    <Box>
+      <Box>
+        {`${passenger.accounts.firstname} ${passenger.accounts.lastname}`}
+      </Box>
+      <Box fontSize='sm' color='gray.500'>
+        {passenger.accounts.contact}
+      </Box>
+    </Box>
+  )
 }

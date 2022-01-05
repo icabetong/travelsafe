@@ -113,7 +113,7 @@ function TravelsTab() {
 
   return (
     <>
-      <Box>
+      <Box w='100%'>
         <TravelList data={travels.rows} onClick={onOpen}/>
       </Box>
       { travel && <DetailsModal/> }
@@ -127,7 +127,7 @@ function TravelList({data, onClick}) {
   const { colorMode } = useColorMode();
 
   return (
-    <SimpleGrid columns={columns} spacing={4}>
+    <SimpleGrid columns={columns} spacing={4} w="100%">
     { data.map((travel) => {
         return (
           <Button

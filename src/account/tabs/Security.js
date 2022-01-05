@@ -49,6 +49,7 @@ function SecurityTab() {
 
   return (
     <Flex
+      w="100%"
       direction="column"
       align="start">
       <SecurityItem

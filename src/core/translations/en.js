@@ -29,7 +29,7 @@ const english = {
       "with-source": "With Source",
       "with-destination": "With Destination",
       "status": "Status",
-      "history": "History"
+      "actions": "Actions",
     },
     "placeholder": {
       "email": "example@gmail.com",
@@ -66,6 +66,9 @@ const english = {
       "upload": "Upload",
       "show": "Show",
       "hide": "Hide",
+      "view-history": "View Travel History",
+      "view-passengers": "View Passengers",
+      "send-sms": "Send SMS",
     },
     "types": {
       "male": "Male",
@@ -125,12 +128,14 @@ const english = {
       "send-password-reset-title": "Send Password Reset Email",
       "send-password-reset-subtitle": "To reset your password, we'll send a reset link to your registered email address: <focus>{{email}}</focus>",
       "travel-history": "Travel History",
+      "passengers": "Passengers",
     },
     "concat": {
       "welcome": "Welcome, {{name}}",
       "or": "or",
     },
     "feedback": {
+      "account-updated": "Account Updated",
       "invalid-route": "Whoops!",
       "invalid-route-subtitle": "Sorry, but that page doesn't exist; it might have been moved or deleted. Either way, try going back to the previous page.",
       "empty-passengers": "There are no passengers registered",
