@@ -278,7 +278,7 @@ function PassengerTab() {
         { data && data.row.length > 0
           && <Paginate
                 onPageChange={onPageChanged}
-                pageCount={data.count}
+                pageCount={Math.ceil(data.count / 10)}
                 currentPage={page}/>
         }
       </Flex>

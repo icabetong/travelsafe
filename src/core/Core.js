@@ -13,6 +13,7 @@ import theme from "../shared/Theme";
 import PrivateRoute from "../shared/custom/PrivateRoute";
 import Verification from "../auth/Verification";
 import ErrorPage from "../error";
+import TestComponent from "../test";
 
 function Core() {
   const { user } = useAuth();
