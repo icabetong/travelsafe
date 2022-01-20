@@ -55,6 +55,7 @@ function InformationTab() {
 
   return (
     <Flex
+      w="100%"
       as="form"
       onSubmit={handleSubmit(onSubmit)}
       direction="column"

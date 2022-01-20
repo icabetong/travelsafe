@@ -95,6 +95,8 @@ const Navigation = () => {
         || location.pathname === '/dashboard' 
         || location.pathname === '/console') {
       navigate('/');
+    } else if (location.pathname === '/') {
+      navigate('/signin')
     }
   }
 

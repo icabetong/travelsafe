@@ -7,6 +7,7 @@ import {
   Flex,
   Stack,
   useToast,
+  useColorMode,
   useBreakpointValue
 } from "@chakra-ui/react";
 import Page from "../shared/custom/Page";
@@ -19,9 +20,10 @@ function Main() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, profile } = useAuth();
-  const size = useBreakpointValue({base: 256});
+  const size = useBreakpointValue({ base: 256 });
   const [scan, setScan] = useState(false);
   const toast = useToast();
+  const { colorMode } = useColorMode();
 
   const onScanInvoke = () => setScan(true);
   const onScanDismiss = () => setScan(false);
@@ -33,7 +35,7 @@ function Main() {
     });
   }
 
-  const onDataCaptured = async (scanned) => {
+  const onDataCaptured = (scanned) => {
     console.log(scanned);
     const onShowError = (title) => {
       toast({
@@ -43,48 +45,52 @@ function Main() {
       });
     }
 
-    let { data, error } = await supabase
-      .from('routes')
-      .select()
-      .eq('driverId', scanned)
-      .eq('finished', false)
-      .single()
-    if (error) onShowError("feedback.error-no-routes");
+    const submit = async (qrdata) => {
+      let { data, error } = await supabase
+        .from('routes')
+        .select()
+        .eq('driverId', qrdata)
+        .eq('finished', false)
+        .single()
+      if (error) onShowError("feedback.error-no-routes");
 
-    let { err } = await supabase.from('travels')
-      .insert({
-        routeId: data.routeId,
-        userId: user.id
-      });
-    if (!err) {
-      setScan(false);
-      toast({
-        title: t("feedback.tracing-details-submitted"),
-        status: "success",
-        isClosable: true
-      });
-    } else onShowError("feedback.error-generic") 
+      let { err } = await supabase.from('travels')
+        .insert({
+          routeId: data.routeId,
+          userId: user.id
+        });
+      if (!err) {
+        setScan(false);
+        toast({
+          title: t("feedback.tracing-details-submitted"),
+          status: "success",
+          isClosable: true
+        });
+      } else onShowError("feedback.error-generic")
+    }
+
+    submit(scanned)
   }
 
   return (
-    <Page title={profile && t("concat.welcome", {name: profile.firstname})} includeFooter>
+    <Page title={profile && t("concat.welcome", { name: profile.firstname })} includeFooter>
       <Flex
         w="100%"
-        direction={{base: "column", md: "row-reverse"}}
+        direction={{ base: "column", md: "row-reverse" }}
         align="center"
         justifyContent="space-around">
-        <Stack>
-          <Box>{t("info.your-qr-code")}</Box>
+        <Stack align='center' justify='center' mt={{ base: 4, sm: 0 }} p={4}>
+          <Box fontWeight="bold" fontSize="lg">{t("info.your-qr-code")}</Box>
           <Box
             as={QRCode}
             value={user.id}
             size={size}
-            width={{base: "xs", md: "md"}}
-            height={{base: "xs", md: "md"}}
+            width={{ base: "xs", md: "md" }}
+            height={{ base: "xs", md: "md" }}
             p={4}
             border="1px"
             borderRadius="md"
-            borderColor="gray.500"/>
+            borderColor={colorMode === 'dark' ? 'gray.500' : 'gray.400'} />
           <Box
             mt={2}
             color="gray.500"
@@ -93,15 +99,14 @@ function Main() {
             {t("info.qr-code-save")}
           </Box>
         </Stack>
-        <Box w={{base: 0, md: 16}}/>
-        <Stack>
+        <Box w={{ base: 0, md: 16 }} />
+        <Stack align='center' justify='center' my={4}>
           <Button
-            mt={8}
             onClick={onScanInvoke}>
             {t("button.scan-qr-code")}
           </Button>
           <Button
-            variant="ghost"
+            variant="outline"
             colorScheme="gray"
             fontSize="sm"
             onClick={() => navigate("/account")}>
@@ -114,7 +119,7 @@ function Main() {
           open={scan}
           onClose={onScanDismiss}
           onDataCapture={onDataCaptured}
-          onDataError={onScanError}/>
+          onDataError={onScanError} />
       }
     </Page>
   );

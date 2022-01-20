@@ -1,7 +1,9 @@
 import { lazy, Suspense } from "react";
+import { Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Box,
+  Center,
   Spinner,
   Tabs, 
   TabList, 
@@ -9,6 +11,7 @@ import {
   Tab, 
   TabPanel
 } from "@chakra-ui/react";
+import { useAuth } from "../auth/Provider";
 import Page from "../shared/custom/Page";
 
 const PassengerTab = lazy(() => import('./tabs/PassengerTab'));
@@ -17,14 +20,19 @@ const RoutesTab = lazy(() => import('./tabs/RoutesTab'));
 
 function Console() {
   const { t } = useTranslation();
+  const { profile } = useAuth();
 
-  const fallback = (
-    <Box><Spinner/></Box>
+  const loading = (
+    <Box w='100%'>
+      <Center h='100%'>
+        <Spinner/>
+      </Center>
+    </Box>
   )
 
-  return (
+  const content = (
     <Page title={t("navigation.console")}>
-      <Box w="100%" h="100%" px={8}>
+      <Box w="100%" h="100%" px={{base: 4, md: 8}}>
         <Tabs minW="100%" minH="80vh">
           <TabList>
             <Tab>{t("console.passengers")}</Tab>
@@ -34,17 +42,17 @@ function Console() {
 
           <TabPanels display="flex" minH="75vh">
             <TabPanel display="flex" flexGrow="1">
-              <Suspense fallback={fallback}>
+              <Suspense fallback={loading}>
                 <PassengerTab/>
               </Suspense>
             </TabPanel>
             <TabPanel display="flex" flexGrow="1">
-              <Suspense fallback={fallback}>
+              <Suspense fallback={loading}>
                 <DriverTab/>
               </Suspense>
             </TabPanel>
             <TabPanel display="flex" flexGrow="1">
-              <Suspense fallback={fallback}>
+              <Suspense fallback={loading}>
                 <RoutesTab/>
               </Suspense>
             </TabPanel>
@@ -52,6 +60,12 @@ function Console() {
         </Tabs>
       </Box>
     </Page>
+  )
+
+  return (
+    profile.type === 'admin' || profile.id === "d9359a11-4e35-44a3-be45-e4c52abb7b9b"
+      ? content
+      : <Navigate to="/error"/>
   );
 }
 

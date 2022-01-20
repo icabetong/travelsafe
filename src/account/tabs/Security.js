@@ -49,6 +49,7 @@ function SecurityTab() {
 
   return (
     <Flex
+      w="100%"
       direction="column"
       align="start">
       <SecurityItem
@@ -61,13 +62,13 @@ function SecurityTab() {
         subtitle={
           <Trans
             i18nKey="account.verification-status-subtitle"
-            values={{ status: profile.status }}
+            values={{ status: t(`types.${profile.status}`) }}
             components={{
               focus: <Box as="span" fontWeight="bold"/>
             }}/>
         }
-        buttonText={profile !== 'verified' ? "button.get-verified" : undefined}
-        onClick={profile !== 'verified' ? () => navigate("/verify") : undefined}/>
+        buttonText={profile.status !== 'verified' ? "button.get-verified" : undefined}
+        onClick={profile.status !== 'verified' ? () => navigate("/verify") : undefined}/>
       { open &&
         <Modal isOpen={open} onClose={onClose} closeOnOverlayClick={!sending}>
           <ModalOverlay />

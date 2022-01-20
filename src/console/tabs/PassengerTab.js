@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
   Box,
@@ -6,8 +7,14 @@ import {
   ButtonGroup,
   Center,
   Flex,
+  FormControl,
+  FormLabel,
   IconButton,
   Image,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -15,6 +22,8 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Radio,
+  RadioGroup,
   Spacer,
   Spinner,
   Stack,
@@ -24,16 +33,19 @@ import {
   Tr,
   Th,
   Td,
+  useBreakpointValue,
   useToast,
   useDisclosure
 } from "@chakra-ui/react";
-import { Edit, RefreshCw, MoreVertical } from "react-feather";
+import { Edit, RefreshCw, MoreVertical, Filter } from "react-feather";
 import supabase from "../../core/Infrastructure";
 import PopoverBox from "../../shared/custom/PopoverBox";
 import PopoverSelect from "../../shared/custom/PopoverSelect";
 import DatePicker from "../../shared/custom/DatePicker";
 import Paginate from "../../shared/custom/Pagination";
+import PopoverForm from "../../shared/custom/PopoverForm";
 import { getPagination } from "../../shared/Tools"; 
+import format from "date-fns/format";
 
 function PassengerTab() {
   const { t } = useTranslation();
@@ -44,10 +56,48 @@ function PassengerTab() {
   const [downloading, setDownloading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [image, setImage] = useState();
+  const [filters, setFilters] = useState({status: 'all'});
+  const [account, setAccount] = useState();
+  const [histories, setHistories] = useState({ rows: [], count: 0, error: undefined });
   const toast = useToast();
+  const showList = useBreakpointValue({base: true, md: false});
+  const { register, handleSubmit } = useForm();
+
   const onVerificationInvoke = (user) => setVerification(user);
   const onVerificationDispose = () => setVerification(undefined);
 
+  const onAccountHistoryInvoked = (account) => setAccount(account);
+  const onAccountHistoryDisposed = () => {
+    setAccount(undefined);
+    setHistories({ rows: [], count: 0, error: undefined });
+  }
+
+  useEffect(() => {
+    let unmounted = false;
+    const fetch = async () => {
+      const { data, error, count } = await supabase
+        .from('travels')
+        .select(`travelId, routes(source, destination, arrival, departure, finished, accounts!driverId(lastname, firstname))`)
+        .eq('userId', account.id)
+        .order('travelId', { ascending: true })
+        
+      if (error) {
+        setHistories({ error: error });
+      }
+
+      if (!unmounted) {
+        setHistories({ row: data, count: count });
+      }
+    }
+
+    if (account) {
+      fetch();
+    }
+    return () => {
+      unmounted = true;
+    }
+  }, [account])
+ 
   useEffect(() => {
     let unmounted = false;
     const fetch = async () => {
@@ -80,19 +130,31 @@ function PassengerTab() {
   }, [verification]);
 
   useEffect(() => {
+    let unmounted = false;
     const fetch = async () => {
       const { from, to } = getPagination(page);
-      const { data, count } = await supabase
+      let query = supabase
         .from('accounts')
         .select(`*`, { count: "exact" })
         .order('lastname', { ascending: true })
         .eq('type', 'passenger')
         .range(from, to)
+      
+      if (filters.status !== 'all') {
+        query = query.eq('status', filters.status);
+      }
   
-      setData({ row: data, count: count });
+      const { data, count } = await query;
+      if (!unmounted) {
+        setData({ row: data, count: count });
+      }
     }
     fetch();
-  }, [page, timestamp]);
+
+    return () => {
+      unmounted = true;
+    }
+  }, [page, timestamp, filters]);
 
   const onSubmit = async (data) => {
     const { id, ...row } = data;
@@ -158,18 +220,65 @@ function PassengerTab() {
             onClick={() => setTimestamp(new Date())}>
             {t("button.refresh")}
           </Button>
+          <PopoverForm
+            header={
+              <Box>{t("dialog.filter")}</Box>
+            }
+            trigger={
+              <Button
+                variant="outline"
+                size="sm"
+                leftIcon={<Filter size={16}/>}>
+                {t("button.filter")}
+              </Button>}>
+            <Stack 
+              as='form' 
+              direction='column'
+              align='center'
+              onSubmit={handleSubmit(setFilters)}>
+              <FormControl as='fieldset'>
+                <FormLabel as='legend'>
+                  {t("field.status")}
+                </FormLabel>
+                <RadioGroup defaultValue='all' name='status'>
+                  <Stack direction='column'>
+                    <Radio {...register('status')} value='all'>{t("types.all")}</Radio>
+                    <Radio {...register('status')} value='unverified'>{t("types.unverified")}</Radio>
+                    <Radio {...register('status')} value='submitted'>{t("types.submitted")}</Radio>
+                    <Radio {...register('status')} value='verified'>{t("types.verified")}</Radio>
+                  </Stack>
+                </RadioGroup>
+              </FormControl>
+              <Button
+                mt={2}
+                size='sm'
+                type='submit'>
+                {t("button.filter")}
+              </Button>
+            </Stack>
+          </PopoverForm>
         </ButtonGroup>
         { data && data.row.length > 0
-          ? <PassengerTable data={data} onSubmit={onSubmit} onVerify={onVerificationInvoke}/>
-          : <Stack direction="column" align="center">
-              <Box>{t("feedback.empty-passengers")}</Box>
-            </Stack>
+          ? showList
+            ? <PassengersList data={data}/>
+            : <PassengerTable 
+                data={data} 
+                onSubmit={onSubmit} 
+                onVerify={onVerificationInvoke}
+                onHistory={onAccountHistoryInvoked}/>
+          : <Box w='100%' h='100%'>
+              <Center h='100%'>
+                <Box fontWeight='medium'>
+                  {t('feedback.empty-passengers')}
+                </Box>
+              </Center>
+            </Box>
         }
         <Spacer/>
         { data && data.row.length > 0
           && <Paginate
                 onPageChange={onPageChanged}
-                pageCount={data.count}
+                pageCount={Math.ceil(data.count / 10)}
                 currentPage={page}/>
         }
       </Flex>
@@ -203,13 +312,35 @@ function PassengerTab() {
           </ModalContent>
         </Modal>
       }
+      { account &&
+        <Modal isOpen={account} onClose={onAccountHistoryDisposed} scrollBehavior='inside'>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>{t("dialog.travel-history")}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              { histories.row &&
+                <RouteHistoryList data={histories.row}/>
+              }
+            </ModalBody>
+
+            <ModalFooter>
+              <Button
+                variant="ghost"
+                onClick={onAccountHistoryDisposed}>
+                {t("button.close")}
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      }
     </>
   );
 }
 
 export default PassengerTab;
 
-function PassengerTable({data, onSubmit, onVerify}) {
+function PassengerTable({data, onSubmit, onVerify, onHistory}) {
   const { t } = useTranslation();
   const { nameFormOpen, onNameFormOpen, onNameFormClose } = useDisclosure();
   const { addressFormOpen, onAddressFormOpen, onAddressFormClose } = useDisclosure();
@@ -227,6 +358,7 @@ function PassengerTable({data, onSubmit, onVerify}) {
           <Th>{t("field.birthdate")}</Th>
           <Th>{t("field.contact")}</Th>
           <Th>{t("field.status")}</Th>
+          <Th>{t("field.actions")}</Th>
         </Tr>
       </Thead>
       <Tbody>
@@ -298,8 +430,8 @@ function PassengerTable({data, onSubmit, onVerify}) {
                 </Td>
                 <Td>
                   <Box>
-                    <Box as='span' mr={2}>{t(`types.${row.accounts.status}`)}</Box>
-                    { row.accounts.status === 'submitted' &&
+                    <Box as='span' mr={2}>{t(`types.${row.status}`)}</Box>
+                    { row.status === 'submitted' &&
                       <IconButton 
                         variant='ghost' 
                         size='xs' 
@@ -308,11 +440,83 @@ function PassengerTable({data, onSubmit, onVerify}) {
                     }
                   </Box>
                 </Td>
+                <Td>
+                  <Flex align='center' justify='center'>
+                    <Menu>
+                      <MenuButton
+                        as={IconButton}
+                        size='xs'
+                        colorScheme='gray'
+                        variant='ghost'
+                        icon={<MoreVertical size={16}/>}/>
+                        <MenuList>
+                        <MenuItem onClick={() => onHistory(row)}>
+                          {t("button.view-history")}
+                        </MenuItem>
+                        <MenuItem>
+                          {t("button.send-sms")}
+                        </MenuItem>
+                      </MenuList>
+                    </Menu>
+                  </Flex>
+                </Td>
               </Tr>
             ) 
           })
         }
       </Tbody>
     </Table>
+  )
+}
+
+function PassengersList({data}) {
+  return (
+    <Box mt={2}>
+      { data.row.map((passenger) => {
+          return (
+            <PassengerListItem
+              key={passenger.id}
+              passenger={passenger}/>
+          );
+        })
+      }
+    </Box>
+  )
+}
+
+function PassengerListItem({passenger}) {
+  return (
+    <Stack direction='column' spacing={0}>
+      <Box fontWeight='semibold'>
+        {`${passenger.firstname} ${passenger.lastname}`}
+      </Box>
+      <Box fontSize='sm' color='gray.500'>
+        {passenger.contact}
+      </Box>
+    </Stack>
+  )
+}
+
+function RouteHistoryList({data}) {
+  return (
+    <Box>
+      { data.map((travel) => {
+          return <RouteHistoryListItem key={travel.travelId} row={travel}/>
+        })
+      }
+    </Box>
+  )
+}
+
+function RouteHistoryListItem({row}) {
+  return (
+    <Stack direction='column' spacing={0}>
+      <Box fontWeight='semibold'>
+        {`${row.routes.source} - ${row.routes.destination}`}
+      </Box>
+      <Box fontSize='sm' color='gray.500'>
+        {format(Date.parse(row.routes.departure), 'h:mm a - MMMM d yyyy')}
+      </Box>
+    </Stack>
   )
 }
