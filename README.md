@@ -1,6 +1,6 @@
 # TravelSafe
 
-An event management web application for small schools.
+A platform for a COVID contact tracing for jeepneys and other public transportation.
 
 ## Built with
 
